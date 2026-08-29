@@ -22,7 +22,7 @@ Every `SKILL.md` is either user-invoked (`disable-model-invocation: true` plus `
 
 To (re)link the promoted skills into this repo's own harness skill directories (`.claude/skills`, `.agents/skills`, both gitignored), run `scripts/link-skills.sh`. The links are scoped to this repo rather than to `$HOME` on purpose: this repo edits the skills themselves, so a machine-wide install would mean editing a skill silently changes how every other project on the machine behaves. The promoted set is read from `.claude-plugin/plugin.json`, so the non-promoted buckets are never linked. Each entry is a symlink into this repo, so edits take effect immediately; re-run the script after adding, removing, or renaming a skill, and it prunes links whose skill has been dropped or demoted.
 
-No em-dashes anywhere in this repo's prose (`SKILL.md` files, docs, `README.md`, `CHANGELOG.md`, ADRs, changesets, code comments). Where a sentence reaches for one, rewrite it instead with a comma, colon, period, parentheses, or a conjunction, whichever the sentence actually wants; never do a blind character substitution.
+No em-dashes anywhere in this repo's prose (`SKILL.md` files, docs, `README.md`, ADRs, code comments). Where a sentence reaches for one, rewrite it instead with a comma, colon, period, parentheses, or a conjunction, whichever the sentence actually wants; never do a blind character substitution.
 
 ## Agent skills
 

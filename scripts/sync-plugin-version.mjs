@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Copies package.json's version into .claude-plugin/plugin.json.
-// Runs as part of `npm run version`, immediately after `changeset version`.
+// The changeset release pipeline that used to invoke it is gone (see
+// .agents/adr/0003-no-release-pipeline.md), so it is now only reachable by
+// hand via `npm run check-plugin-version`.
 // With --check it changes nothing and exits 1 if the two versions differ.
 
 import { readFileSync, writeFileSync } from "node:fs";
