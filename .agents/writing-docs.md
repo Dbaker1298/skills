@@ -16,7 +16,7 @@ Fill the template below, keeping its order. The **fixed frame** (`## What it doe
 
 Four sections make a page worth reading: `What it does`, `When to reach for it`, `Common questions`, `It's working if`. The first two orient the reader; the last two are where the page stops summarising the skill and starts answering the reader's own situation. Each of the last two has a bar to clear, below, but treat a page that clears neither as unfinished, not as finished-and-short.
 
-**A page carries no install commands.** The ai-hero page template renders the install widget itself (a copy button, the single-skill command, the whole-set command, and the update line) above the body. A page that also writes them out shows the reader the same command twice, and the two copies drift: the hand-written pair on every page went stale against the widget beside it. Install wording is a property of the site, not of the page. If it needs changing, change it in ai-hero; the canonical wording lives in [the install block](./install-block.md).
+**A page carries no install commands.** Send the reader to `README.md`, which is the one place they are written out. Upstream's reason was that its published site rendered an install widget above every page, so a page repeating the commands showed them twice; the hand-written pair on every page then went stale against the widget beside it. This repository has no site, so the reason is now the simpler one: install wording changes as a set, and a copy on each of two dozen pages is two dozen places to miss. The canonical wording lives in [the install block](./install-block.md), and `README.md` is its only consumer.
 
 <page-template>
 
