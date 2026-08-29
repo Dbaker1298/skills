@@ -4,6 +4,12 @@ set -euo pipefail
 # NOTE: This is a dev-only script, intended for use by maintainers of this repo.
 # It is not a supported installer.
 #
+# Upstream's copy carried the line "Modifications to it, or requests for
+# modifications, will not be approved." That rule was addressed to contributors
+# to upstream's repo. It is deliberately dropped here: this repo owns and edits
+# this script (see issue #3). Recording the removal rather than deleting the
+# sentence silently.
+#
 # Links this repo's promoted skills into the harness skill directories *inside
 # this repo*:
 #   - .claude/skills: Claude Code
@@ -47,33 +53,24 @@ if [ "${#missing[@]}" -gt 0 ]; then
 fi
 
 for DEST in "${DESTS[@]}"; do
-  # If $DEST resolves back into the repo's own skills/ tree, the per-skill
-  # symlinks would be written into the source of truth itself. Bail out rather
-  # than pollute the working copy.
-  if [ -e "$DEST" ] || [ -L "$DEST" ]; then
-    resolved="$(readlink -f "$DEST")"
-    case "$resolved" in
-      "$REPO/skills"|"$REPO/skills"/*)
-        echo "error: $DEST resolves into this repo's own skills tree ($resolved)." >&2
-        echo "Linking there would write symlinks into the source of truth." >&2
-        echo "Remove it (rm \"$DEST\") and re-run; the script will recreate it as a real dir." >&2
-        exit 1
-        ;;
-    esac
+  # $DEST must be the exact path we intend to write to. If it is a symlink
+  # pointing anywhere else, the per-skill links land somewhere unintended: the
+  # repo's own skills/ tree, or worse the tracked working copy root, where the
+  # prune pass below would start deleting tracked files. Whitelist the intended
+  # path rather than blacklisting known-bad ones.
+  # readlink -f resolves every component, so this also catches a symlinked
+  # .claude or .agents, not just a symlinked skills/ leaf. It is empty only when
+  # a parent directory is missing, which mkdir -p below handles.
+  resolved="$(readlink -f "$DEST" || true)"
+  if [ -n "$resolved" ] && [ "$resolved" != "$DEST" ]; then
+    echo "error: $DEST resolves to $resolved, not to itself." >&2
+    echo "This script only writes to that exact path; linking elsewhere risks" >&2
+    echo "writing symlinks into the tracked working copy." >&2
+    echo "Remove the symlink and re-run; it will be recreated as a real dir." >&2
+    exit 1
   fi
 
   mkdir -p "$DEST"
-
-  # Drop links left over from a previous run: a skill that has since been
-  # dropped or renamed should stop resolving, not linger.
-  for existing in "$DEST"/*; do
-    [ -L "$existing" ] || continue
-    target="$(readlink -f "$existing" || true)"
-    case "$target" in
-      "$REPO/skills"/*) [ -f "$target/SKILL.md" ] || rm "$existing" ;;
-      *) ;;
-    esac
-  done
 
   for rel in "${promoted[@]}"; do
     src="$REPO/$rel"
@@ -85,6 +82,7 @@ for DEST in "${DESTS[@]}"; do
     fi
 
     ln -sfn "$src" "$target"
+    echo "linked $name -> ${rel}"
   done
 
   # Prune links for skills no longer in the promoted set (dropped, or demoted to
@@ -100,14 +98,14 @@ for DEST in "${DESTS[@]}"; do
       fi
     done
     if [ -z "$keep" ]; then
-      target="$(readlink -f "$existing" || true)"
+      target="$(readlink -f "$existing")"
       case "$target" in
-        "$REPO"/*) rm "$existing" ;;
+        "$REPO/skills"/*) rm "$existing" ;;
       esac
     fi
   done
 
-  echo "linked ${#promoted[@]} promoted skills into ${DEST#$REPO/}"
+  echo "linked ${#promoted[@]} promoted skills into ${DEST#"$REPO"/}"
 done
 
 # Clean up after the previous, machine-wide version of this script: anything
@@ -117,7 +115,7 @@ for OLD in "$HOME/.claude/skills" "$HOME/.agents/skills"; do
   pruned=0
   for existing in "$OLD"/*; do
     [ -L "$existing" ] || continue
-    target="$(readlink -f "$existing" || true)"
+    target="$(readlink -f "$existing")"
     case "$target" in
       "$REPO"|"$REPO"/*) rm "$existing"; pruned=$((pruned + 1)) ;;
     esac
@@ -125,5 +123,4 @@ for OLD in "$HOME/.claude/skills" "$HOME/.agents/skills"; do
   if [ "$pruned" -gt 0 ]; then
     echo "removed $pruned stale link(s) from $OLD pointing into this repo"
   fi
-  rmdir "$OLD" 2>/dev/null || true
 done
