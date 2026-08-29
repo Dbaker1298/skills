@@ -52,7 +52,7 @@ It's in Claude Code's official marketplace, so there's nothing to add first, and
 npx skills@latest add mattpocock/skills
 ```
 
-Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take, so make sure `setup-matt-pocock-skills` is one of them.**
+Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take: make sure `setup-david-baker-skills` is one of them.**
 
 A native Codex plugin is on the roadmap (see [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md)).
 
@@ -71,7 +71,7 @@ It writes the skills into your repo as ordinary files you own and can edit. Noth
 
 </details>
 
-### 2. Run `/setup-matt-pocock-skills`
+### 2. Run `/setup-david-baker-skills`
 
 In your agent, run it once per repo. It will:
 
