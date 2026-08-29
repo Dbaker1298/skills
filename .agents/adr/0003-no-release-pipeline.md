@@ -15,8 +15,10 @@ that arrived with the snapshot describe upstream's history, and a first
 version cut here would claim changes it never contained.
 
 So the pipeline is removed rather than adapted: `.changeset/`, the release
-workflow, and `CHANGELOG.md` are deleted, and the changeset scripts and
-dependencies come out of the package manifest.
+workflow, and `CHANGELOG.md` are deleted. The package manifest and lockfile
+went with them, along with the script that reconciled the manifest's version
+against the plugin's, leaving `.claude-plugin/plugin.json` as the only place
+a version is written.
 
 What replaces it, for now, is nothing. Git history is the record of what
 changed, `UPSTREAM.md` records how far upstream has been reviewed, and the
