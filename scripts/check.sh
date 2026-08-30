@@ -249,14 +249,32 @@ rule_no_orphaned_docs_pages() {
 # format; a hand-rolled copy here would drift and would be wrong in the
 # direction that matters, passing something Claude rejects.
 #
-# It validates the marketplace manifest only. Given the repo root, the CLI
-# prints "Validating marketplace manifest" and reads .claude-plugin/
-# marketplace.json alone; the plugin manifest needs its own invocation,
-# `claude plugin validate .claude-plugin/plugin.json --strict`, which is not
-# run here. That invocation currently warns that CLAUDE.md at the plugin root
-# is not loaded as project context, which is true and intended, so adding it
-# as a rule means deciding what to do with that warning first. CLAUDE.md
-# states both invocations and what each covers.
+# Two invocations, because neither covers both manifests.
+#
+# The ticket that asked for this said the first command "reads
+# marketplace.json only" and never opens plugin.json. That turns out to be
+# wrong, and the test that showed it is worth recording: delete the name field
+# from plugin.json and the marketplace run reports
+# "plugins[0] plugin.json -> name: Invalid input", so it does validate the
+# plugin manifest's fields through the marketplace's plugin list.
+#
+# The second invocation still earns its place, because the two are not
+# redundant: the plugin-manifest run also checks the plugin root, which is
+# where the CLAUDE.md warning below comes from, and the marketplace run never
+# emits it. Validating the file directly is also what keeps plugin.json covered
+# if it ever stops being reachable from marketplace.json.
+#
+# The plugin-manifest run always warns that CLAUDE.md at the plugin root is not
+# loaded as project context, and --strict promotes that to a failure. The
+# warning is accurate and permanently inapplicable: the validator's suggested
+# remedy is to ship the context as a skill, but CLAUDE.md is instructions for
+# people working on this repository and is deliberately not shipped to plugin
+# consumers. So it is filtered out and anything else still fails.
+#
+# The filter matches the warning's text, so a reworded message in a future
+# Claude Code release stops matching and fails this rule. That is the direction
+# to fail in: a new failure gets read, a silent pass does not. Same ordering as
+# the zero-entry guard in rule_manifest_entries_resolve.
 #
 # A missing CLI is a skip, not a violation. An unreadable manifest is this
 # repo being wrong; an absent CLI is the machine lacking a tool, and the two
@@ -279,6 +297,210 @@ rule_plugin_manifest_validates() {
     violation "claude plugin validate . --strict failed:
 $(printf '%s\n' "$output" | sed 's/^/    /')"
   fi
+
+  # Reported separately from the marketplace run above. They validate different
+  # files, so collapsing them would leave the reader working out which manifest
+  # the output belongs to.
+  # U+276F, the glyph the validator prefixes each finding with. Spelt as bytes
+  # for the same reason the em dash is: so the character itself stays out of
+  # this file's prose.
+  local findings_bullet=$'\xe2\x9d\xaf'
+
+  local plugin_output filtered
+  if ! plugin_output="$(claude plugin validate .claude-plugin/plugin.json --strict 2>&1)"; then
+    # The validator prints each finding as its own bulleted line and everything
+    # else as chrome: what it is validating, how many findings there were, and
+    # the verdict. So drop the one finding that is permanently inapplicable
+    # here, then ask whether any finding is left. Matching on the bullet rather
+    # than on the chrome means a new warning is caught whatever its wording,
+    # and only the exact known line is ever suppressed.
+    filtered="$(printf '%s\n' "$plugin_output" |
+      grep "$findings_bullet" |
+      grep -v 'CLAUDE.md at the plugin root is not loaded as project context' || true)"
+
+    if [ -n "$filtered" ]; then
+      violation "claude plugin validate .claude-plugin/plugin.json --strict failed:
+$(printf '%s\n' "$filtered" | sed 's/^/    /')"
+    fi
+  fi
+}
+
+# Every tracked file, NUL separated, symlinks excluded.
+#
+# git rather than find: find would walk .git/ and any untracked scratch file in
+# the tree, and neither is this repo making a claim. A clone has git by
+# definition, so this is not the kind of dependency the header rules out, but a
+# tarball download is not a clone, hence the guard in the two rules below.
+#
+# AGENTS.md is a symlink to CLAUDE.md. Following it would count the same bytes
+# twice and make every allowance below need a second, identical entry that says
+# nothing.
+#
+# NUL separated in and out, because a path is not a line. `git ls-files -s -z`
+# emits "<mode> <object> <stage>\t<path>" with the path verbatim and NUL
+# terminated, so cutting at the first tab is exact: no quoting to undo, and a
+# name containing a space, a doubled space, or a newline survives it. Callers
+# read it back with `read -r -d ''` for the same reason.
+tracked_text_files() {
+  local entry
+  while IFS= read -r -d '' entry; do
+    case "$entry" in
+      120000\ *) continue ;;
+    esac
+    printf '%s\0' "${entry#*$'\t'}"
+  done < <(git ls-files -s -z)
+}
+
+# The strings that name upstream, and the exact number of times each is allowed
+# to appear in each file that is allowed to carry it.
+#
+# A count rather than a bare path, because a path alone is a blanket exemption:
+# it would let a new reference slip into README.md unnoticed precisely because
+# README.md is a file where one reference belongs. Pinning the number means the
+# allowance covers the sentence that earned it and nothing else.
+#
+# The cost is that rewording an allowed sentence fails this rule until the
+# number is updated. That is the direction to fail in, and it is a one-line
+# fix: the alternative is a leak that reports clean because it landed in a file
+# already on the list.
+#
+# Each entry is "<count> <path>". Every file not named here must contain none.
+upstream_identity_allowances() {
+  cat <<'ALLOW'
+1 LICENSE
+2 README.md
+2 UPSTREAM.md
+1 CLAUDE.md
+1 CONTEXT.md
+3 docs/agents/issue-tracker.md
+11 .agents/adr/0002-ship-as-a-claude-code-plugin.md
+1 .agents/adr/0004-drop-the-router-rather-than-rename-it.md
+3 skills/misc/scaffold-exercises/SKILL.md
+7 scripts/check.sh
+ALLOW
+}
+
+# Why each allowance exists, so that removing one is a decision rather than a
+# guess:
+#
+#   LICENSE                     upstream's copyright line, the MIT obligation
+#   README.md                   the one derivation sentence (link text + URL)
+#   UPSTREAM.md                 the seed statement, same shape
+#   CLAUDE.md                   the rule that this repo was seeded, not forked
+#   CONTEXT.md                  the glossary entry defining Upstream
+#   docs/agents/issue-tracker.md  the two-remote note that stops a write to
+#                               upstream; deleting it is a safety regression
+#   adr/0002                    inherited reasoning, which CLAUDE.md says to
+#                               annotate rather than edit
+#   adr/0004                    records why ask-matt was dropped; the decision
+#                               is unreadable without naming what was dropped
+#   scaffold-exercises          NOT provenance, and the one entry here that is
+#                               not defensible on its own terms. A misc/ skill
+#                               that shells out to `pnpm ai-hero-cli`,
+#                               upstream's course tooling, so it does nothing
+#                               outside upstream's course repo. It is allowed
+#                               only so this rule could land, which makes it
+#                               debt rather than a decision. Tracked as #36,
+#                               whose verdict should delete this line.
+#   scripts/check.sh            this rule's own pattern, plus the two notes
+#                               above that name what they are about. The five
+#                               patterns and those two mentions are the seven;
+#                               changing either fails this rule until the count
+#                               is re-counted, which is the point.
+rule_no_upstream_identity() {
+  if ! command -v git >/dev/null 2>&1 || ! git rev-parse --git-dir >/dev/null 2>&1; then
+    skip "upstream identity strings unchecked: not a git working tree"
+    return
+  fi
+
+  local pattern='mattpocock|matt pocock|ask-matt|aihero|ai-hero'
+
+  local allowed_paths=() allowed_counts=() count path
+  while read -r count path; do
+    [ -n "$path" ] || continue
+    allowed_paths+=("$path")
+    allowed_counts+=("$count")
+  done < <(upstream_identity_allowances)
+
+  # Counted per file rather than per line: two references on one line are two
+  # references, and a rule that could not tell them apart would let a second one
+  # in wherever a first was allowed.
+  local found_paths=() found_counts=() file n i
+  while IFS= read -r -d '' file; do
+    [ -f "$file" ] || continue
+    n="$(grep -oIiE "$pattern" "$file" 2>/dev/null | grep -c . || true)"
+    if [ "$n" -gt 0 ]; then
+      found_paths+=("$file")
+      found_counts+=("$n")
+    fi
+  done < <(tracked_text_files)
+
+  local j matched expected
+  for i in "${!found_paths[@]}"; do
+    matched=""
+    for j in "${!allowed_paths[@]}"; do
+      if [ "${allowed_paths[$j]}" = "${found_paths[$i]}" ]; then
+        matched=1
+        expected="${allowed_counts[$j]}"
+        break
+      fi
+    done
+
+    if [ -z "$matched" ]; then
+      violation "${found_paths[$i]}: ${found_counts[$i]} upstream identity string(s), in a file with no allowance"
+    elif [ "${found_counts[$i]}" != "$expected" ]; then
+      violation "${found_paths[$i]}: ${found_counts[$i]} upstream identity string(s), but the allowance is $expected"
+    fi
+  done
+
+  # A stale allowance is reported too. Left unchecked the list would only ever
+  # grow, and an allowance outliving the sentence it was written for is how the
+  # narrow list quietly becomes the blanket exemption it exists to avoid.
+  for j in "${!allowed_paths[@]}"; do
+    matched=""
+    for i in "${!found_paths[@]}"; do
+      if [ "${found_paths[$i]}" = "${allowed_paths[$j]}" ]; then
+        matched=1
+        break
+      fi
+    done
+    [ -n "$matched" ] || violation "${allowed_paths[$j]}: allowed ${allowed_counts[$j]} upstream identity string(s) but carries none, so the allowance is stale"
+  done
+}
+
+# No em dash anywhere. CLAUDE.md states the rule for this repo's prose and lists
+# where prose lives: SKILL.md files, docs, README.md, ADRs, code comments. That
+# list is nearly every text file here, so the rule reads all of them rather than
+# maintaining a second copy of the list that would drift from the first.
+#
+# It reports the character, never rewrites it. CLAUDE.md is explicit that the
+# fix is a rewrite into whatever the sentence actually wants, a comma, colon,
+# period, parentheses or a conjunction, and "never do a blind character
+# substitution". A checker that fixed this automatically would be doing exactly
+# the substitution the convention forbids.
+rule_no_em_dashes() {
+  if ! command -v git >/dev/null 2>&1 || ! git rev-parse --git-dir >/dev/null 2>&1; then
+    skip "em dashes unchecked: not a git working tree"
+    return
+  fi
+
+  # Spelt as its UTF-8 bytes, not as the character. Written literally, the rule
+  # would match its own source on every run, and the only ways out of that are
+  # an exemption for this file or a count pinned to a line of code, both worse
+  # than one escape sequence.
+  local emdash=$'\xe2\x80\x94'
+
+  local file hits
+  while IFS= read -r -d '' file; do
+    [ -f "$file" ] || continue
+    # -I so a binary file is skipped rather than reported as one long match.
+    hits="$(grep -nI -- "$emdash" "$file" 2>/dev/null || true)"
+    if [ -n "$hits" ]; then
+      while IFS= read -r hit; do
+        violation "$file:${hit%%:*}: em dash"
+      done <<< "$hits"
+    fi
+  done < <(tracked_text_files)
 }
 
 RULES=(
@@ -286,6 +508,8 @@ RULES=(
   rule_promoted_skills_are_wired
   rule_no_orphaned_docs_pages
   rule_plugin_manifest_validates
+  rule_no_upstream_identity
+  rule_no_em_dashes
 )
 
 # A rule that fails outright is reported as a violation rather than allowed to

@@ -45,10 +45,10 @@ Install commands are copied verbatim from the **canonical install blocks** in [.
 
 The two manifests are validated by two different commands, and neither covers both:
 
-- `claude plugin validate . --strict` reads `.claude-plugin/marketplace.json` only, despite the path given to it
-- `claude plugin validate .claude-plugin/plugin.json --strict` reads the plugin manifest
+- `claude plugin validate . --strict` validates `.claude-plugin/marketplace.json` and, through it, the fields of each plugin manifest the marketplace lists. It reports those under a `plugins[<n>] plugin.json` prefix. What it does not do is the per-plugin checks below.
+- `claude plugin validate .claude-plugin/plugin.json --strict` validates the plugin manifest directly, and additionally checks the plugin root, which the marketplace run does not.
 
-Run whichever matches the manifest you touched. The plugin-manifest run reports one warning, that `CLAUDE.md` at the plugin root is not loaded as project context, which is accurate and expected: this file is the repository's own instructions and is not shipped to consumers. Under `--strict` that warning fails the run.
+Run both; the **checker** does, so running it is the shorter way. The plugin-manifest run reports one warning, that `CLAUDE.md` at the plugin root is not loaded as project context, which is accurate and expected: this file is the repository's own instructions and is not shipped to consumers. Under `--strict` that warning fails the run, so the checker suppresses that one finding and fails on any other.
 
 ## The checker
 
