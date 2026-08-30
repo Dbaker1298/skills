@@ -67,6 +67,19 @@ This repository was **seeded** from `mattpocock/skills` and has independent hist
 
 Inherited documents that record upstream's reasoning, the ADRs in `.agents/adr/`, are kept in their original voice rather than rewritten into mine. Where one states something that is false here, annotate it; do not edit the reasoning.
 
+## Branches and pull requests
+
+Work lands on `main` through a pull request, not a direct push. A ruleset on
+the default branch requires one, requires the `repo invariants` and
+`shellcheck` checks to pass, and blocks deletion and force-push outright. The
+admin role bypasses it, so a direct push still succeeds for me; that is an
+escape hatch for a broken `main`, not the normal route. Reaching for it because
+a PR feels like ceremony defeats the tracking the PR exists to give.
+
+So: branch, push the branch, open a PR that names the issue it closes, let the
+checks run, merge. Approvals are not required, since a solo repository cannot
+supply one.
+
 ## Commits
 
 Commit subjects follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `<type>: <subject>`, or `<type>(<scope>): <subject>` where a scope earns its keep. The types in use here are `feat`, `fix`, `docs`, `refactor`, `chore`, and `test`. Most work in this repository is prose, so `docs` is the common case and a skill's behaviour changing is `feat` or `fix` rather than `docs`, even though the file it lives in is Markdown.
