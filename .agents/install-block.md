@@ -36,7 +36,7 @@ The plugin is Claude Code only. Everywhere else, [skills.sh](https://skills.sh/D
 npx skills@latest add Dbaker1298/skills
 ```
 
-Pick the skills you want, and which coding agents to install them on. **The menu lists every skill in the repository, not just the promoted set, so `in-progress/` and `misc/` are in it too: take what you want from `engineering/` and `productivity/`, and make sure `setup-david-baker-skills` is one of them.** Run it with a terminal attached. With stdin piped, as in CI, it takes the whole `skills/` tree without asking.
+Pick the skills you want, and which coding agents to install them on. **The menu lists every skill in the repository, not just the promoted set, so the `in-progress/` bucket is in it too: take what you want from `engineering/` and `productivity/`, and make sure `setup-david-baker-skills` is one of them.** Run it with a terminal attached. With stdin piped, as in CI, it takes the whole `skills/` tree without asking.
 
 </canonical-block>
 

@@ -75,10 +75,12 @@ One smaller drift in the inherited text above. "The constraint" names a
 escape-hatch bullet, and in the blast radius of the restructure option. This
 repository has no such bucket and never received one in the snapshot: the
 promoted buckets are `engineering/` and `productivity/`, and the non-promoted
-ones are `misc/`, `in-progress/` and `deprecated/`. None of the three mentions
-changes the argument they support, which is that a single path string cannot
-express a curated subset of a bucketed repository, and that argument still
-holds here with one bucket fewer.
+ones are `in-progress/` and `deprecated/`. A `misc/` bucket did arrive in the
+snapshot, and the inherited text names it too; it was emptied and removed once
+its skills had verdicts. None of the mentions changes the argument they
+support, which is that a single path string cannot express a curated subset of
+a bucketed repository, and that argument still holds here with two buckets
+fewer.
 
 The decision itself stands unchanged: ship the Claude Code plugin, keep
 skills.sh as the universal installer, defer a native Codex plugin.

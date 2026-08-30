@@ -19,8 +19,8 @@ set -euo pipefail
 # would mean editing a skill silently changes how every other project behaves.
 #
 # The promoted set is read from .claude-plugin/plugin.json, which is the single
-# source of truth for what ships. Skills in the non-promoted buckets (misc/,
-# in-progress/, deprecated/) are never linked.
+# source of truth for what ships. Skills in the non-promoted buckets
+# (in-progress/, deprecated/) are never linked.
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 DESTS=("$REPO/.claude/skills" "$REPO/.agents/skills")

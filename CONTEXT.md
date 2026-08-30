@@ -11,7 +11,7 @@ One directory under a **Bucket**, holding a `SKILL.md` that tells an agent how t
 _Avoid_: command, slash command
 
 **Bucket**:
-A folder directly under `skills/` that sorts skills by their standing here: `engineering/` and `productivity/` for daily work, `misc/` for kept but rarely reached for, `in-progress/` for beta, `deprecated/` for retired.
+A folder directly under `skills/` that sorts skills by their standing here: `engineering/` and `productivity/` for daily work, `in-progress/` for beta, `deprecated/` for retired.
 _Avoid_: category, group, folder
 
 **Promoted**:

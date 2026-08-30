@@ -18,3 +18,4 @@ write it with `/writing-for-agents`, and delete the line.
 - Rancher
 - RKE2
 - Harvester
+- Pre-commits

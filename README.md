@@ -38,7 +38,7 @@ The marketplace has to be added first, and it is added once. Updates are not aut
 npx skills@latest add Dbaker1298/skills
 ```
 
-Pick the skills you want, and which coding agents to install them on. **The menu lists every skill in the repository, not just the promoted set, so `in-progress/` and `misc/` are in it too: take what you want from `engineering/` and `productivity/`, and make sure `setup-david-baker-skills` is one of them.** Run it with a terminal attached. With stdin piped, as in CI, it takes the whole `skills/` tree without asking.
+Pick the skills you want, and which coding agents to install them on. **The menu lists every skill in the repository, not just the promoted set, so the `in-progress/` bucket is in it too: take what you want from `engineering/` and `productivity/`, and make sure `setup-david-baker-skills` is one of them.** Run it with a terminal attached. With stdin piped, as in CI, it takes the whole `skills/` tree without asking.
 
 A native Codex plugin is on the roadmap (see [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md)).
 
@@ -111,6 +111,7 @@ Code work.
 - **[code-review](./skills/engineering/code-review/SKILL.md)**: Two-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?) and **Spec** (does it faithfully implement the originating issue/spec?), run as parallel sub-agents so neither pollutes the other.
 - **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)**: Work through an in-progress git merge or rebase conflict hunk by hunk, resolving by intent traced to each side's primary source, then finish the operation (never `--abort`).
 - **[wizard](./skills/engineering/wizard/SKILL.md)**: Generate an interactive bash wizard that walks a human through steps only they can perform: provisioning infrastructure, setting up credentials or CI secrets, walking an unfamiliar third-party dashboard, or running a one-off migration or cutover.
+- **[git-guardrails-claude-code](./skills/engineering/git-guardrails-claude-code/SKILL.md)**: Install a Claude Code PreToolUse hook that blocks destructive git commands (`push`, `reset --hard`, `clean -f`, `branch -D`, `checkout .`) before the agent can run them.
 
 ### Productivity
 
