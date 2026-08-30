@@ -18,7 +18,7 @@ Reach for it when there is a concrete behaviour to build, with an input and an o
 | You have a spec or tickets and want the whole build run for you | [implement](./implement.md), which drives `tdd` per ticket |
 | Config, wiring, glue, type annotations, straight CRUD delegation | Nothing here fits well; see the open gap below |
 
-That last row is a real hole, not a stylistic preference. The skill decides *where* the seams go; nothing in it decides *whether* a change is worth the loop at all. Run it on a change with no independent source of truth to assert against and you get a test that restates the implementation: the tautological anti-pattern the skill itself warns about, arrived at from the other direction. It is [issue #746](https://github.com/mattpocock/skills/issues/746) and it is open. Until it closes, that judgement is yours or your `CLAUDE.md`'s.
+That last row is a real hole, not a stylistic preference. The skill decides *where* the seams go; nothing in it decides *whether* a change is worth the loop at all. Run it on a change with no independent source of truth to assert against and you get a test that restates the implementation: the tautological anti-pattern the skill itself warns about, arrived at from the other direction. Nothing in the skill closes that hole, so the judgement is yours or your `CLAUDE.md`'s: decide what is worth the loop before you start it.
 
 ## Prerequisites
 
@@ -48,19 +48,19 @@ Mocks are for system boundaries only: external APIs, time, randomness, sometimes
 
 **Why doesn't it refactor? The description says "red-green-refactor".**
 
-Because the refactor step was removed and the description was not. The removal was deliberate: agents essentially never did it, and keeping implementation and review in separate sessions works better. Whether the result still counts as TDD by the book matters less than whether the loop produces better code. The mismatch between the trigger phrase and the body is filed as [issue #589](https://github.com/mattpocock/skills/issues/589) and is still open, so "red-green-refactor" continues to work as a phrase that fires the skill. What you get is red → green, and refactoring in [code-review](./code-review.md).
+Because the refactor step was removed and the description was not. The skill's own rules say so outright: refactoring is not part of the loop, it belongs to the review stage. The removal was deliberate, on the grounds that keeping implementation and review in separate sessions produces better code than a third step an agent skips anyway, and whether the result still counts as TDD by the book matters less than that. The description still carries "red-green-refactor" because that is the phrase people type to fire the skill, so it keeps working as a trigger. What you get is red → green, and refactoring in [code-review](./code-review.md).
 
 **It asked me to choose a test seam and I had no idea which to pick.**
 
-This is the most-reported friction with the skill ([issue #607](https://github.com/mattpocock/skills/issues/607)). The prompt lists candidate seams by name only, with nothing about what each one catches or misses, so you are choosing between labels. There is no fix shipped yet. The practical workaround is to ask the agent for the trade-offs before answering: what does the component-level seam miss that the integration seam catches, and how much slower is it. It is also why the chain agrees seams up front in `to-spec`, where you have the whole feature in view rather than one prompt.
+The skill asks one question, "what's the public interface, and which seams should we test?", and then refuses to write a test at a seam you have not confirmed. It gives you nothing to answer it with: no note on what a component-level seam catches that an integration seam misses, no sense of what each costs to run. You are choosing between labels. Ask for the trade-offs before you answer, in those terms, and the gate does its job. It is also why the chain agrees seams up front in `to-spec`, where you have the whole feature in view rather than one prompt at the moment you least want to think about it.
 
 **It wrote the implementation before the test, even though the skill says red first.**
 
-It happens. One user pushed the model on it and got an unusually honest answer: "I knew the skill said 'one test at a time, watch it fail for the right reason'. I read it. I just defaulted to my normal habit." The skill is written to live with this. No instruction makes an agent comply 100% of the time, and forcing the point harder restricts the agent's creativity for little gain; the loop is worth running even when it is not followed strictly, because the results are still better overall. If strict adherence matters for a particular slice, watch the run rather than trusting the skill to enforce it.
+It happens, and the skill is written to live with it rather than to prevent it. No instruction makes an agent comply every time; a model that has read "one test at a time, watch it fail for the right reason" can still fall back on its ordinary habit of writing the code first. Tightening the wording buys little and costs flexibility elsewhere, and the loop is worth running even when it is followed loosely, because the tests you end up with are better than the ones you would have written after the fact. Where strict adherence matters for a particular slice, watch the run rather than trusting the skill to enforce it.
 
 **Should it write browser or end-to-end tests first?**
 
-Usually not, and the skill will not stop it. A user reported the agent writing a Playwright test first, then burning a long loop re-running it and concluding the *test* was broken for a feature that did not exist yet. Configure this in your `CLAUDE.md`. Browser tests are slow enough that the red-green feedback loop stops paying for itself; declare in your repo's `CLAUDE.md` that they are written after the behaviour works.
+Usually not, and the skill will not stop it. A browser or end-to-end test is slow enough that the red → green loop stops paying for itself, and pointed at behaviour that does not exist yet it gives you a long, expensive red that teaches you nothing: the agent re-runs it, and the likeliest conclusion it draws is that the *test* is broken. Declare in your repo's `CLAUDE.md` that browser tests are written once the behaviour works, and the skill will follow your file.
 
 **Does `/tdd` replace `/implement`, or the course's `/do-work`?**
 
@@ -72,7 +72,7 @@ Into [codebase-design](./codebase-design.md) in v1.0, generalised so several ski
 
 **Does it know about my other tickets?**
 
-No. Run against one ticket, it will happily propose work that belongs to a sibling ticket, because it has no view of the rest of the issue graph ([issue #129](https://github.com/mattpocock/skills/issues/129)). Matt's position is that this is not `tdd`'s job. Passing the spec alongside the ticket helps; right-sizing the tickets in the first place helps more.
+No. It has no view of the issue graph at all, so run against one ticket it will happily propose work that belongs to a sibling. Widening its view is not the fix and is not this skill's job: `tdd` is a loop around one behaviour, and a loop that reads your whole backlog is a different tool. Pass the spec alongside the ticket and it has the surrounding shape without the licence to build it; right-size the tickets in the first place and the problem mostly stops arising.
 
 ## It's working if
 
