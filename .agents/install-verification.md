@@ -86,6 +86,14 @@ lists skills this repository does not stand behind, and a piped run takes every
 one of them without asking. The promoted set is a guarantee of the plugin route
 only.
 
+**Since corrected, 2026-08-30.** The tree the run measured has changed, so the
+two counts above are historical rather than current. #37 dropped six skills and
+removed `misc/` as a bucket, promoting `git-guardrails-claude-code` into
+`engineering/`. The promoted set is 25, the non-promoted remainder is 4, all of
+them in `in-progress/`, and a whole-tree skills.sh run would now take 29. The
+finding itself is unaffected: skills.sh still reads directories rather than the
+manifest, which is the part that has to be re-checked, not the arithmetic.
+
 **Not proved: public reachability.** Both routes succeeded while the repository
 is private, because both authenticate as me, the plugin route over SSH and
 skills.sh through my GitHub credentials. Unauthenticated, `skills.sh` and the
