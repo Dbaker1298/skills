@@ -32,7 +32,7 @@ Every triaged item ends up carrying exactly one category role and one state role
 | --- | --- |
 | `needs-triage` | You need to evaluate it. Where an unlabelled issue normally lands first. |
 | `needs-info` | Waiting on the reporter. Returns to `needs-triage` when they reply. |
-| `ready-for-agent` | Fully specified, with an agent brief attached. An AFK agent can take it. |
+| `ready-for-agent` | Fully specified, with an agent brief attached. An AFK agent, one running unattended, can take it. |
 | `ready-for-human` | The same brief, plus why this can't be delegated: judgment, external access, manual testing. |
 | `wontfix` | Closed, with the reason recorded. |
 

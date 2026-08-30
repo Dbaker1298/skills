@@ -28,7 +28,7 @@ That last row is a real hole, not a stylistic preference. The skill decides *whe
 
 Three words carry this skill.
 
-**Red-green.** Write the failing test, then only enough code to pass it. No anticipating the test after next. There is no refactor phase: it was dropped in June 2026 because agents essentially never performed it, and because review and implementation work better as separate sessions. Refactoring belongs to [code-review](./code-review.md).
+**Red-green.** Write the failing test, then only enough code to pass it. No anticipating the test after next. There is no refactor phase: the skill puts refactoring in the review stage rather than in the implementation cycle, so what you get is red → green and nothing after it. Refactoring belongs to [code-review](./code-review.md).
 
 **Vertical slice.** One seam, one test, one minimal implementation, then repeat, the first cycle being a **tracer bullet** that proves a single path end to end. The opposite is horizontal slicing: all the tests first, then all the code. Bulk tests verify *imagined* behaviour, they check the shape of things rather than what a user does, and they commit you to a test structure before you understand the implementation.
 
@@ -48,7 +48,7 @@ Mocks are for system boundaries only: external APIs, time, randomness, sometimes
 
 **Why doesn't it refactor? The description says "red-green-refactor".**
 
-Because the refactor step was removed and the description was not. The skill's own rules say so outright: refactoring is not part of the loop, it belongs to the review stage. The removal was deliberate, on the grounds that keeping implementation and review in separate sessions produces better code than a third step an agent skips anyway, and whether the result still counts as TDD by the book matters less than that. The description still carries "red-green-refactor" because that is a phrase that fires the skill, so it keeps working as a trigger. What you get is red → green, and refactoring in [code-review](./code-review.md).
+Because the description and the rules disagree, and the rules are the half that binds. The skill's own rules say it outright: refactoring is not part of the loop, it belongs to the review stage. Splitting implementation and review across separate sessions is the design rather than an oversight, and whether the result still counts as TDD by the book matters less than that. The description still carries "red-green-refactor" because that is a phrase that fires the skill, so it keeps working as a trigger. What you get is red → green, and refactoring in [code-review](./code-review.md).
 
 **It asked me to choose a test seam and I had no idea which to pick.**
 
