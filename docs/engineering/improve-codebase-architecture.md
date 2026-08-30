@@ -15,7 +15,7 @@ It sits outside the build loop: it is not a step in the main loop but something 
 | Situation | How it is used |
 | --- | --- |
 | Routine upkeep | Run it every few days, or whenever a spare moment appears, to stop structure rotting between features. |
-| Before a big build | Point it at the spec: "how can we make this change easy?" This is the most effective prompt for it. |
+| Before a big build | Point it at the spec: "how can we make this change easy?" This is the prompt that gets the most out of it. |
 | Brownfield audit | Run it on a large, unstructured or vibe-coded repo to find out what shape it is actually in. |
 | Legacy test work | Use it to find the missing seams first, before writing tests against untestable code. |
 
@@ -53,15 +53,15 @@ Picking a candidate starts a [grilling](../productivity/grilling.md) session ove
 
 **It grilled me for an hour about one idea instead of showing me options. Can I turn that off?**
 
-Yes: say so when you invoke it ("don't grill me, just show the report"). This is the loudest complaint the skill has. One user put it bluntly: they liked it as "a convenient way to get a thorough analysis of improvements," and after the grilling loop was added found it "borderline unusable," reporting sessions where it proposed a single solution and then asked "10's or 100's of questions." The design intent is that the report comes first and the grill only starts on a candidate you chose, but weaker models skip straight to interviewing you about the first idea they had. Reports in that thread vary sharply by model, and it is an open issue: the skill does not yet have a documented no-grill mode.
+Yes: say so when you invoke it ("don't grill me, just show the report"). What you hit is the skill running out of order. Its steps are explicit: scan, then present every candidate as an HTML report ending in a top recommendation, and only *then*, once you have picked one, call the grilling skill on that candidate. A model that skips to step 3 interviews you about the first idea it had, which is the opposite of what the report is for, and the survey you came for never gets written. There is no documented no-grill mode, so asking for one in the invocation is the whole of the fix. If the report does not arrive first, the skill is not running as written.
 
 **The report opened as unstyled raw HTML with no diagrams. What happened?**
 
-The report loads Tailwind and Mermaid from CDNs, so it needs network access when you open it, and it breaks silently when something blocks those scripts. The filed case was a security hook demanding SRI hashes: the agent added them, the CDN served different bytes to the browser than to the `curl` used to compute the hash, and the browser blocked the script. Offline and locked-down environments hit the same wall. The agent cannot see this, because it never renders the page. The workaround is to ask for inline CSS and hand-built SVG diagrams instead of the CDN scaffold. This is an open issue and a real rough edge.
+The report loads Tailwind and Mermaid from CDNs, so it needs network access when you open it, and it breaks silently when something blocks those scripts. The sharp version of this is a security policy that demands subresource-integrity hashes: the agent adds them, the CDN serves different bytes to your browser than to the `curl` that computed the hash, and the browser blocks the script. Offline and locked-down environments hit the same wall from the other side. The agent cannot see any of it, because it never renders the page it just wrote. Ask for inline CSS and hand-built SVG diagrams instead of the CDN scaffold and the problem goes away.
 
 **It gave me twelve candidates. Do I work through them in the same session or start a new one?**
 
-One candidate per session. Working through several in one conversation fills the context window with the report, the grilling, the domain-model edits and the code changes all at once. The report only lives in a temp file, so carry the candidate itself rather than the file: pick one, grill it, take the decision into `/to-spec`, and turn the rest into tickets you can pick up independently later. Put the chosen improvement into a spec rather than going straight to implementation. This is a recurring question with no documented workflow in the skill itself.
+One candidate per session. Working through several in one conversation fills the context window with the report, the grilling, the domain-model edits and the code changes all at once. The report only lives in a temp file, so carry the candidate itself rather than the file: pick one, grill it, take the decision into `/to-spec`, and turn the rest into tickets you can pick up independently later. Put the chosen improvement into a spec rather than going straight to implementation. The skill documents no workflow for carrying several candidates forward, so that sequence is yours to run.
 
 **How should I prompt it?**
 
@@ -69,11 +69,11 @@ With the next thing you are building in mind. Where a big build is coming up, po
 
 **Does it work on a large legacy codebase?**
 
-Partly. It is strong on big existing codebases lacking consistent structure, and it is the recommended upkeep mechanism after any one-time structural setup. The honest counterweight: users with genuinely out-of-control projects report it "helped a little but still doesn't seem to cut it," and one developer with an eight-year legacy codebase reported the model going in circles where the same skill produces a clean graph on a tidy repo. There is no dedicated `/refactor` skill for that case yet. If the codebase has no shared vocabulary at all, [grill-with-docs](./grill-with-docs.md) to establish one first tends to make this skill's output much better.
+Partly, and the limit is worth knowing before you point it at your worst repo. It is strong on a large codebase that lacks consistent structure, and it is the upkeep mechanism to run periodically after any one-time structural setup. What it is not is a rescue for a codebase that has genuinely got away from you: the skill surveys for deepening candidates and needs enough coherent structure to have candidates, so on a sprawling legacy tree it produces a thinner report than the same skill gives you on a tidy one. There is no dedicated `/refactor` skill for that case. Where the codebase has no shared vocabulary at all, run [grill-with-docs](./grill-with-docs.md) first to establish one; this skill's output improves sharply once the words exist.
 
 **How is this different from `/codebase-design`?**
 
-`/codebase-design` is a reference, not a session driver. It supplies the vocabulary (module, interface, depth, seam, adapter, leverage, locality), and this skill borrows it. Pointing a fresh agent at `/codebase-design` as the thing to "do" is a known failure: with no process of its own to follow, the agent invents one, re-explores code and runs for a very long time before asking you anything. Drive with this skill; consume that one.
+`/codebase-design` is a reference, not a session driver. It supplies the vocabulary (module, interface, depth, seam, adapter, leverage, locality), and this skill borrows it. Pointing a fresh agent at `/codebase-design` as the thing to "do" fails predictably: with no process of its own to follow, the agent invents one, re-explores code and runs for a very long time before asking you anything. Drive with this skill; consume that one.
 
 **Will it ever tell me the codebase is fine?**
 
@@ -81,11 +81,11 @@ Rarely, and you should know that going in. The skill is built to output findings
 
 **Does it work in Codex or another harness?**
 
-Partially. The exploration step names Claude Code's `Agent` tool with `subagent_type=Explore` directly, so a harness without that tool may skip the parallel exploration rather than substitute its own. The skill still runs; the scan is just less thorough. A harness-neutral rewrite has been proposed but is not merged.
+Partially. The exploration step names Claude Code's `Agent` tool with `subagent_type=Explore` directly, so a harness without that tool may skip the parallel exploration rather than substitute its own. The skill still runs; the scan is just less thorough. Nothing in it names a fallback, so if your harness fans out to parallel agents under another name, say so when you invoke it.
 
 **How do I actually implement deep modules in TypeScript?**
 
-There is no good answer shipped with the skill. The recurring request is for a `TYPESCRIPT.md` giving concrete file and module layouts for the principles, and it does not exist. The skill will tell you where a deepening belongs and what should sit behind the seam; translating that into a package or directory structure is currently on you.
+There is no good answer shipped with the skill. What would close the gap is a language-specific companion giving concrete file and module layouts for the principles, and none exists. The skill will tell you where a deepening belongs and what should sit behind the seam; translating that into a package or directory structure is currently on you.
 
 ## It's working if
 

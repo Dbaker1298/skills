@@ -24,7 +24,7 @@ The line between `research` and `grill-with-docs` is the **shelf life of what co
 
 The defining move is that the reading runs as a **background agent**. You keep working; it goes off, follows each claim to its primary source, writes one Markdown file, and reports back. Research is legwork you delegate, not thinking you outsource: you get a document to grill, plan, or design against, and you still make the call.
 
-The delegation is unguarded, and the background agent can spawn a further background agent of its own. This is the skill's best-documented rough edge.
+The delegation is unguarded, and the background agent can spawn a further background agent of its own. This is the skill's sharpest rough edge.
 
 Where the file lands is decided by the repo, not by the skill: it matches whatever convention already exists for notes, and if there is none it picks somewhere sensible and tells you where. It writes one file per run.
 

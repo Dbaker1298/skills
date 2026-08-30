@@ -48,7 +48,7 @@ Mocks are for system boundaries only: external APIs, time, randomness, sometimes
 
 **Why doesn't it refactor? The description says "red-green-refactor".**
 
-Because the refactor step was removed and the description was not. The skill's own rules say so outright: refactoring is not part of the loop, it belongs to the review stage. The removal was deliberate, on the grounds that keeping implementation and review in separate sessions produces better code than a third step an agent skips anyway, and whether the result still counts as TDD by the book matters less than that. The description still carries "red-green-refactor" because that is the phrase people type to fire the skill, so it keeps working as a trigger. What you get is red → green, and refactoring in [code-review](./code-review.md).
+Because the refactor step was removed and the description was not. The skill's own rules say so outright: refactoring is not part of the loop, it belongs to the review stage. The removal was deliberate, on the grounds that keeping implementation and review in separate sessions produces better code than a third step an agent skips anyway, and whether the result still counts as TDD by the book matters less than that. The description still carries "red-green-refactor" because that is a phrase that fires the skill, so it keeps working as a trigger. What you get is red → green, and refactoring in [code-review](./code-review.md).
 
 **It asked me to choose a test seam and I had no idea which to pick.**
 

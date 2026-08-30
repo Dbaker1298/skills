@@ -6,7 +6,7 @@ It is the **active** discipline, not the passive one. Reading `CONTEXT.md` to bo
 
 ## When to reach for it
 
-Type `/domain-modeling`, or the agent reaches for it automatically when a task fits. In practice, automatic invocation is the weakest part of the skill: when `grill-with-docs` or `wayfinder` say to load it, models frequently load `grilling` and skip this one. If a grilling session runs and `CONTEXT.md` is untouched at the end, that is what happened; invoke it by name alongside the other skill.
+Type `/domain-modeling`, or the agent reaches for it automatically when a task fits. Automatic invocation is the weakest part of the skill: when `grill-with-docs` or `wayfinder` name it alongside `grilling`, a model can load one and quietly skip the other. If a grilling session runs and `CONTEXT.md` is untouched at the end, that is what happened; invoke it by name alongside the other skill.
 
 Reach for it when the *words* are the problem:
 
@@ -30,7 +30,7 @@ Nothing needs to exist before you start, and nothing is created speculatively.
 
 ## Two artifacts, two bars
 
-The glossary and the ADR are held to different standards, and conflating them is where most of the trouble in this skill comes from.
+The glossary and the ADR are held to different standards, and conflating them is what goes wrong with this skill.
 
 | | `CONTEXT.md` | `docs/adr/NNNN-slug.md` |
 | --- | --- | --- |
@@ -41,7 +41,7 @@ The glossary and the ADR are held to different standards, and conflating them is
 
 Miss any one of the ADR's three tests and there is no ADR. An easily-reversed decision will just get reversed; an unsurprising one is nobody's question; one with no real alternative records that you did the obvious thing.
 
-The `CONTEXT.md` rule is the one to actually hold onto, because it is the one that breaks in the field. **It is a glossary and nothing else.** Left unchecked, a model treats "write to `CONTEXT.md`" as permission to persist every answer you give, and the file turns into a running spec. Expect this rather than hoping against it: the instruction to keep the file a glossary is a sentence in a skill, and a session that has just produced a decision will look for somewhere to put it.
+The `CONTEXT.md` rule is the one to actually hold onto, because it is the one most easily broken. **It is a glossary and nothing else.** Left unchecked, a model treats "write to `CONTEXT.md`" as permission to persist every answer you give, and the file turns into a running spec. Expect this rather than hoping against it: the instruction to keep the file a glossary is a sentence in a skill, and a session that has just produced a decision will look for somewhere to put it.
 
 ## Cross-referencing, and where it stops
 

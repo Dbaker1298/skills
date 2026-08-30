@@ -21,7 +21,7 @@ Reach for it when the learning is the project: a language, a framework, a codeba
 
 ## Prerequisites
 
-`teach` builds a directory rather than producing a file, and the skill assumes one mission per workspace, so run it somewhere you are happy to give over to a single topic. Keep it out of the project you are working in: a separate repo is the recommended home, rather than a global `~/.learnings/` folder or the working project itself. A dedicated repo also makes the lessons committable, which is how teams have shared them.
+`teach` builds a directory rather than producing a file, and the skill assumes one mission per workspace, so run it somewhere you are happy to give over to a single topic. Keep it out of the project you are working in: a separate repo is the recommended home, rather than a global `~/.learnings/` folder or the working project itself. A dedicated repo also makes the lessons committable, which is what you want if anyone else is going to read them.
 
 What accumulates in that directory:
 
@@ -59,7 +59,7 @@ Lessons are built from **components** in `assets/`: stylesheets, quiz widgets, s
 A real bug, and it comes from one ambiguity. `SKILL.md` uses `./` for two different roots at once: `./MISSION-FORMAT.md` and its siblings really do sit next to `SKILL.md` in the installed skill, while `./lessons/`, `./reference/`, `./learning-records/` and `./assets/` are meant to be in your directory. An agent that resolves the first kind against the skill's install directory goes on to resolve the second kind there too, and writes your course into the skill folder. Check where the first lesson landed before you build on it, and name the directory explicitly when you start rather than relying on "the current directory" being understood.
 
 **Do I stay in one session, or start a new one per lesson?**
-All three approaches work: staying in the same session, re-invoking `/teach` in a new session, or opening a new session in the same folder. Each lesson is its own invocation. The folder is the continuity, not the conversation. Common practice is to open a fresh session in the workspace and say `/teach next lesson for <topic>`.
+All three approaches work: staying in the same session, re-invoking `/teach` in a new session, or opening a new session in the same folder. Each lesson is its own invocation. The folder is the continuity, not the conversation. The simplest routine is to open a fresh session in the workspace and say `/teach next lesson for <topic>`.
 
 **How do I know it isn't teaching me something it made up?**
 You don't, on the skill's word alone. You read the primary sources. `teach` is not reliable enough to trust unchecked, and no skill built on an LLM is. The grounding machinery (`RESOURCES.md`, citations in every lesson, one recommended primary source per lesson) exists to make verification cheap, not to remove the need for it. The risk is concentrated somewhere specific: procedural domains with precise notation, where a move sequence, a chord voicing or a command incantation reads perfectly and only fails when you execute it. It is lowest where the output is immediately verifiable, like code you can run. When something does come out wrong, the things worth checking are the model, the harness, the reasoning effort, and which source the lesson claimed to be working from.

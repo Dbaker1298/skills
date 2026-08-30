@@ -54,17 +54,17 @@ Correct, and expected. `implement` has no completion step. It ends at the commit
 
 **Can I point it at all my tickets at once, or run several in parallel?**
 
-No. One invocation, one ticket. Batch dispatch across a ticket queue and subagent fan-out are both requested repeatedly, and neither exists. Running several `/implement` sessions side by side in one checkout is worse than unsupported: one field report describes a `git commit --amend` in one session landing on another session's commit, a stash vanishing from `refs/stash`, and commits landing on the wrong branch, all in a single afternoon across three issues. The sessions share one working directory, one index, and one HEAD. Git worktrees are the community workaround, and note that `refs/stash` is shared across worktrees too, so worktrees alone do not fix the stash case. If you want parallelism today, you are assembling it yourself.
+No. One invocation, one ticket; there is no batch dispatch across a queue and no subagent fan-out. Running several `/implement` sessions side by side in one checkout is worse than unsupported, and the reason is git rather than the skill: the sessions share one working directory, one index and one HEAD, so a `git commit --amend` in one lands on whatever the other just committed, and commits arrive on the wrong branch. Worktrees give each session its own directory, index and HEAD, which fixes most of it, but note that `refs/stash` is shared across worktrees too, so a stash can still vanish from under one session. If you want parallelism today, you are assembling it yourself.
 
 **Can it open a pull request instead of committing?**
 
-Not built in. It commits straight to the current branch, which several people find too eager: the code lands before they have had a chance to verify it works. There is no configuration flag and no PR mode. People override it in the invocation ("commit to a branch and open a PR") or by editing their local copy of the skill.
+Not built in. The skill's instruction is one line, `Commit your work to the current branch.`, and there is no configuration flag and no PR mode. Worth knowing that this is eager: the code lands before you have had a chance to run it yourself, and on the current branch rather than a throwaway one. Override it in the invocation ("commit to a branch and open a PR"), or edit your local copy if you want it to be the default.
 
 **`code-review` says it cannot see my changes.**
 
-`code-review` reviews `git diff <fixed-point>...HEAD`, which excludes staged and working-tree changes. `implement` runs it before committing, so unless an interim commit already exists there is nothing in that diff to review. Multiple people have reported this and it is unfixed on both sides. Commit first, then review against the point you branched from.
+`code-review` reviews `git diff <fixed-point>...HEAD`, which excludes staged and working-tree changes. `implement` runs it before committing, so unless an interim commit already exists there is nothing in that diff to review. Neither side works around the other, so commit first, then review against the point you branched from.
 
-Separately, some people deliberately do not want the review inside the run at all, because an agent reviewing the code it just wrote is biased toward its own solution. Running [code-review](./code-review.md) in a fresh session against a fixed point is a legitimate alternative, and is the same reason that skill runs its two axes in separate sub-agents.
+There is also a case for not wanting the review inside the run at all: see [code-review](./code-review.md) on why a fresh session reviews better than the one that wrote the diff. Running it yourself against a fixed point is a legitimate alternative to letting `implement` drive it.
 
 **One ticket burned 150k tokens. Am I using it wrong?**
 

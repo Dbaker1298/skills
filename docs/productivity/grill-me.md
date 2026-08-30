@@ -20,7 +20,7 @@ Leave plan mode off. Plan mode primes the agent to rush toward producing a plan,
 
 ## It's a conversation, not an interview
 
-The skill asks the questions, but **you** own the scope. That is the part people miss, and it separates a session that turns an idea into decisions from one that produces confident nonsense.
+The skill asks the questions, but **you** own the scope. That is the part to hold on to, and it separates a session that turns an idea into decisions from one that produces confident nonsense.
 
 The failure mode is **passivity**: answering "agreed, agreed, agreed" for forty questions and coming out with a plan the agent wrote and you nodded at. It feels productive because it was long. Nothing was actually decided, and the result carries a certainty it hasn't earned.
 
@@ -46,7 +46,7 @@ Talking your way through an ungrillable question is where sessions balloon. The 
 ## Common questions
 
 **How many questions should I expect, and how do I know when it ends?**
-Count rounds, not questions. Forty-six questions across four rounds is an ordinary session. It ends when the frontier is empty: every branch visited, nothing left silently assumed.
+Count rounds, not questions. A single round can hold a dozen questions or more, so a total in the dozens across a handful of rounds is not a sign anything is wrong. It ends when the frontier is empty: every branch visited, nothing left silently assumed.
 
 **It asked me two hundred questions. What went wrong?**
 Usually the scope was too large. Ask the agent to break the work into smaller pieces first, then grill each one. Very long sessions also drift into the **dumb zone**, where the context window is full enough that the questions get worse.
@@ -69,7 +69,7 @@ More than for most skills. Grilling leans on the model's own sense of how system
 
 ## Where it fits
 
-`grill-me` is a **standalone you can run anywhere, on anything**. Being stateless is what makes it portable: no repo, no workspace, no setup, and no assumption that the idea is even about software. People point it at business decisions, at writing, at what to do next: anything that won't sit still in their head.
+`grill-me` is a **standalone you can run anywhere, on anything**. Being stateless is what makes it portable: no repo, no workspace, no setup, and no assumption that the idea is even about software. Point it at a business decision, at a piece of writing, at what to do next: anything that will not sit still in your head.
 
 That portability is the whole difference from [grill-with-docs](../engineering/grill-with-docs.md), which runs the same interview but reads a codebase to align against and records what it learns as `CONTEXT.md` and ADRs. Both sit on the [grilling](./grilling.md) primitive; `grill-me` is the user-invoked front door that carries nothing with it.
 

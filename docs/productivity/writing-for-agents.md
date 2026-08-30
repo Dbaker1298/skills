@@ -32,7 +32,7 @@ Once you think in these two loads, most authoring decisions (split or don't, inl
 ## Common questions
 
 **Where did `/writing-great-skills` go?**
-It is this skill, renamed in v1.1. Practitioners were already pointing it at `AGENTS.md`, docs, specs, tickets and runtime prompts long before the name caught up; structure, leading words and pruning turn out to be the craft of any text an agent reads. There is no alias. Reinstall under the new name.
+It is this skill, renamed in v1.1. The old name was too narrow: structure, leading words and pruning are the craft of any text an agent reads, not just of a `SKILL.md`, and the rename says so. There is no alias. Reinstall under the new name.
 
 **"Writing for agents": so the agent does the writing?**
 The other way round. You are the author; the agent is the reader. That is the whole difficulty of the genre: you are writing for a reader who has already read everything, so explanation is waste and precision is the entire job.
@@ -53,7 +53,7 @@ Ask which load you want to pay. `CLAUDE.md` loads into every session uncondition
 Mostly no, and over-fitting to one model is its own trap. Updating for a new model is usually another no-op pass rather than a rewrite.
 
 **My skill only works on the exact task I built it from.**
-The common route (do the work once, then have the agent write it up as a skill) over-indexes on that one run, and the exemplars come out too specific. Keep the run as evidence, then abstract deliberately: strip what belonged to that repo and those files, and write for the class of task.
+The obvious route (do the work once, then have the agent write it up as a skill) over-indexes on that one run, and the exemplars come out too specific. Keep the run as evidence, then abstract deliberately: strip what belonged to that repo and those files, and write for the class of task.
 
 **English isn't my first language. Do I lose the leading-word advantage?**
 No. Finding the word that packs the most behaviour into the fewest tokens is work the reference does for you. It is one of the things it is for.
