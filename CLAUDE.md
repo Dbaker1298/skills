@@ -41,7 +41,7 @@ Every `SKILL.md` is either user-invoked (`disable-model-invocation: true` plus `
 
 ## Install commands
 
-Install commands are copied verbatim from the **canonical install blocks** in [.agents/install-block.md](./.agents/install-block.md). Change a block first and propagate outward; never edit a command at a leaf. `.claude-plugin/marketplace.json` makes the repo its own single-plugin marketplace, which is the documented install route: this repo is not in Claude Code's official marketplace, so there is no listing for it to be a fallback to. Why a Claude plugin but not (yet) a Codex one lives in [.agents/adr/0002-ship-as-a-claude-code-plugin.md](./.agents/adr/0002-ship-as-a-claude-code-plugin.md).
+Install commands are copied verbatim from the **canonical install blocks** in [.agents/install-block.md](./.agents/install-block.md). Change a block first and propagate outward; never edit a command at a leaf. `.claude-plugin/marketplace.json` makes the repo its own single-plugin marketplace, which is the documented install route: this repo is not in Claude Code's official marketplace, so there is no listing for it to be a fallback to. Why a Claude plugin but not (yet) a Codex one lives in [.agents/adr/0002-ship-as-a-claude-code-plugin.md](./.agents/adr/0002-ship-as-a-claude-code-plugin.md). After changing a block, re-run the sandbox check in [.agents/install-verification.md](./.agents/install-verification.md): install wording is only true once a stranger's copy of the command has been run from outside this repo.
 
 The two manifests are validated by two different commands, and neither covers both:
 

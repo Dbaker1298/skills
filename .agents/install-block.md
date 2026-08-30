@@ -36,7 +36,7 @@ The plugin is Claude Code only. Everywhere else, [skills.sh](https://skills.sh/D
 npx skills@latest add Dbaker1298/skills
 ```
 
-Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take: make sure `setup-david-baker-skills` is one of them.**
+Pick the skills you want, and which coding agents to install them on. **The menu lists every skill in the repository, not just the promoted set, so `in-progress/` and `misc/` are in it too: take what you want from `engineering/` and `productivity/`, and make sure `setup-david-baker-skills` is one of them.** Run it with a terminal attached. With stdin piped, as in CI, it takes the whole `skills/` tree without asking.
 
 </canonical-block>
 
@@ -64,6 +64,6 @@ The plugin is a managed, read-only bundle you subscribe to. skills.sh writes fil
 
 ## What these commands assume
 
-Both routes read the repository over the public internet, so **neither resolves while `Dbaker1298/skills` is private**. They are written against the state the repository is being moved toward, not the state it is in today, and go public together with it.
+Both routes read the repository over the network, so **neither resolves for anyone without access to it while `Dbaker1298/skills` is private**. Unauthenticated, `skills.sh/Dbaker1298/skills` and the GitHub API both answer 404. They resolve for me, because the plugin route clones over my SSH key and skills.sh reads through my GitHub credentials, which is the one thing a stranger will not have. So the sandbox run proved the manifests, the wording, and the installed set; it could not prove public reachability, and that half goes public with the repository.
 
-The skills.sh route is the less certain of the two: the service serves public GitHub repositories that contain skills, which this one will be, but that has not been exercised against this repository yet. #25 checks both end to end from a clean sandbox, and it gates publication.
+Both routes were exercised end to end from a clean sandbox on 2026-08-29, which is where the correction above came from. [install-verification.md](./install-verification.md) holds the recipe, the results, and the one step still to run once the repository is public.

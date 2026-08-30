@@ -38,7 +38,7 @@ The marketplace has to be added first, and it is added once. Updates are not aut
 npx skills@latest add Dbaker1298/skills
 ```
 
-Pick the skills you want, and which coding agents to install them on. **The installer lets you choose which skills to take: make sure `setup-david-baker-skills` is one of them.**
+Pick the skills you want, and which coding agents to install them on. **The menu lists every skill in the repository, not just the promoted set, so `in-progress/` and `misc/` are in it too: take what you want from `engineering/` and `productivity/`, and make sure `setup-david-baker-skills` is one of them.** Run it with a terminal attached. With stdin piped, as in CI, it takes the whole `skills/` tree without asking.
 
 A native Codex plugin is on the roadmap (see [`.agents/adr/0002-ship-as-a-claude-code-plugin.md`](./.agents/adr/0002-ship-as-a-claude-code-plugin.md)).
 
