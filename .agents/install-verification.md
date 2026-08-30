@@ -101,10 +101,27 @@ GitHub API both answer 404 for this repository. So this run proved the
 manifests, the wording, and the installed set, and left the stranger's position
 untested.
 
-## Still to run, once the repository is public
+## The anonymous re-run, once the repository is public
 
-Re-run both routes with the credentials out of the way, which is the only part
-that has to wait: a machine that has never authenticated to GitHub, or a shell
-with `GH_TOKEN` unset, `gh auth logout`, and the SSH agent empty. What is being
-checked is that the clone falls back to HTTPS and succeeds anonymously, and
-that `skills.sh/Dbaker1298/skills` answers 200. Record the result here.
+Re-run both routes with the credentials out of the way. Do not reach for
+`gh auth logout`: logging the machine out to test a clone is a large change to
+make for a small check, and it is easy to forget to undo. Point `HOME` at an
+empty directory instead. Both routes read their credentials out of `HOME`, the
+plugin route through `~/.ssh` and `~/.gitconfig`, skills.sh through
+`~/.config/gh`, so an empty one is a stranger's machine for as long as the
+command runs and nothing outside it is touched.
+
+```sh
+export SANDBOX_HOME=/tmp/skills-anon-sandbox/home
+mkdir -p "$SANDBOX_HOME" /tmp/skills-anon-sandbox/project
+cd /tmp/skills-anon-sandbox/project && git init -q
+env -i HOME="$SANDBOX_HOME" PATH="$PATH" GIT_TERMINAL_PROMPT=0   git clone https://github.com/Dbaker1298/skills.git anon-clone
+```
+
+`GIT_TERMINAL_PROMPT=0` matters: without it a repository that is still private
+hangs on a username prompt instead of failing, and the check looks stuck rather
+than red. Then run both install routes under the same `env -i` prefix, and
+check `skills.sh/Dbaker1298/skills` answers 200 rather than 404.
+
+What is being proved is the one thing the 2026-08-29 run could not: that the
+commands resolve for someone who is not me. Record the result here.
