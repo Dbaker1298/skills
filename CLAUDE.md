@@ -68,6 +68,16 @@ This repository was **seeded** from `mattpocock/skills` and has independent hist
 
 Inherited documents that record upstream's reasoning, the ADRs in `.agents/adr/`, are kept in their original voice rather than rewritten into mine. Where one states something that is false here, annotate it; do not edit the reasoning.
 
+## Commits
+
+Commit subjects follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `<type>: <subject>`, or `<type>(<scope>): <subject>` where a scope earns its keep. The types in use here are `feat`, `fix`, `docs`, `refactor`, `chore`, and `test`. Most work in this repository is prose, so `docs` is the common case and a skill's behaviour changing is `feat` or `fix` rather than `docs`, even though the file it lives in is Markdown.
+
+The subject is imperative, lowercase after the type, and carries no trailing period. The body explains why, wraps at roughly 72 columns, and follows the same prose rules as everything else here, em-dashes included. Close the issue the work came from with a `Closes #<n>` line at the end.
+
+Merge commits keep the `Merge #<n>: <subject>` form they already use. They record an integration rather than a change, so the convention does not reach them.
+
+The **checker** does not read commit messages, so nothing enforces this automatically. A `commit-msg` hook would, and adding one is its own decision, not something this section presumes.
+
 ## Agent skills
 
 ### Issue tracker
