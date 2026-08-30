@@ -17,4 +17,18 @@ Both were reviewed against this ADR's own test rather than waved through. Each s
 
 The three soft-dependency skills are unchanged and still carry no pointer.
 
-Found while repairing these pointers in #13, after the setup skill was renamed.
+The soft-dependency examples need one correction of their own. `diagnose` is
+not a skill in this repository; the nearest is `diagnosing-bugs`, and it is
+soft-dependency by this ADR's own test, naming `CONTEXT.md` and nearby ADRs in
+vague prose and carrying no setup pointer. `tdd` and
+`improve-codebase-architecture` are named correctly and classified correctly.
+So the split the paragraph records is right for this repository even though one
+of its three labels is not.
+
+The hard-dependency list is now exhaustive and agrees with the tree: those
+five skills are the only ones carrying an explicit setup pointer. The
+soft-dependency list stays a list of examples and is not exhaustive, since
+several other skills read `CONTEXT.md` or nearby ADRs without a pointer.
+
+Found while repairing these pointers in #13, after the setup skill was renamed;
+the soft-dependency correction and the exhaustiveness check were added in #22.
