@@ -36,7 +36,7 @@ Those agreed seams then travel. [tdd](./tdd.md) works only at pre-agreed seams, 
 ## Common questions
 
 **Where did `/to-prd` go?**
-It is this skill, renamed in v1.1. "Spec" is now the single through-line term, and the old `to-prd` slug is dead; reinstall under the new name. The pair that replaced the old vocabulary is *spec* and *tickets*: the spec is the destination and the decisions that fix it, the tickets are the execution steps that get there. If you pivot, delete the unfinished tickets and keep the spec.
+It is this skill, renamed. "Spec" is now the single through-line term, and the old `to-prd` slug is dead; reinstall under the new name. The pair that replaced the old vocabulary is *spec* and *tickets*: the spec is the destination and the decisions that fix it, the tickets are the execution steps that get there. If you pivot, delete the unfinished tickets and keep the spec.
 
 **Why does the spec get the `ready-for-agent` label? I don't want an agent implementing off it.**
 The label means "no further triage needed": the document is complete enough for an agent to work from. It is an input designation, not a work order. But if you run AFK agents, unattended runners that poll for `ready-for-agent`, that distinction isn't visible to them, and they will happily try to build the whole spec in one run instead of picking up the ticket slices. Nothing in the label distinguishes a spec from a slice, so exclude the parent spec explicitly in your AFK agent's prompt, or strip the label once `/to-tickets` has run.

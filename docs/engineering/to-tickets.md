@@ -67,8 +67,8 @@ The skill asks for the right thing and does not say how, which is enough of a ga
 **"Blocked by" was written into the issue body instead of a real blocking link.**
 Same gap, same fix. GitHub does have a native blocking relationship, whatever an agent tells you: `gh issue create --blocked-by 12,15` sets it at creation time, and because the skill publishes in dependency order with blockers first, the numbers it needs always exist by the time it gets there. The body text is the documented fallback for trackers with no native edge, not the default, so an agent reaching for it on GitHub has quietly downgraded your issue graph to prose.
 
-**Where do the local tickets go? The v1.1 notes said a root-level `tickets.md`.**
-They did, and that was a bug: a single shared file also raced when parallel agents wrote to it. Local mode now writes one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, in dependency order, matching the layout the local tracker template already described. The `NN` prefix is a real ticket ID, so `/implement 03` works instead of retyping a long title.
+**Where do the local tickets go?**
+One file per ticket, under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, in dependency order, matching the layout the local tracker template already described. Not the root-level `tickets.md` an older version of the skill wrote: a single shared file raced when parallel agents wrote to it. The `NN` prefix is a real ticket ID, so `/implement 03` works instead of retyping a long title.
 
 **It kept truncating when it tried to read my spec.**
 A very large spec can outgrow what a tracker issue serves back cleanly, and there is no local copy to fall back on, so the agent then burns tool calls re-fetching chunks and never reaches the end. Don't clear or compact between `/to-spec` and `/to-tickets`. Run them in the same context window and the spec never has to be fetched back at all.

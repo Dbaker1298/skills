@@ -65,7 +65,7 @@ No. The two are orthogonal: a deep module is about the design of the interface a
 
 **Does `tdd` actually use this vocabulary?**
 
-It does now. For a long time it did not. The inline deep-module notes that used to live inside `tdd` were removed in v1.0 in favour of this shared skill, but the pointer replacing them was never added, so `tdd` defined "seam" for itself and referenced nothing. The gap is closed: the pointer is now in the skill, reached when the shape of the interface is the open question rather than the tests. `tdd` still owns "seam" as the boundary you *test* at; this skill owns the module shape behind it.
+It does now. For a long time it did not. The inline deep-module notes that used to live inside `tdd` were removed in favour of this shared skill, but the pointer replacing them was never added, so `tdd` defined "seam" for itself and referenced nothing. The gap is closed: the pointer is now in the skill, reached when the shape of the interface is the open question rather than the tests. `tdd` still owns "seam" as the boundary you *test* at; this skill owns the module shape behind it.
 
 **Does the design-it-twice pattern work in my harness?**
 

@@ -22,7 +22,7 @@ That last row is a real hole, not a stylistic preference. The skill decides *whe
 
 ## Prerequisites
 
-[codebase-design](./codebase-design.md) needs to be installed. `tdd` used to carry its own deep-module and interface-design notes; in v1.0 those were deleted in favour of the shared skill, and `tdd` now leans on it for interface-design vocabulary. Nothing else; the skill is stateless and writes no files of its own.
+[codebase-design](./codebase-design.md) needs to be installed. `tdd` used to carry its own deep-module and interface-design notes; those were deleted in favour of the shared skill, and `tdd` now leans on it for interface-design vocabulary. Nothing else; the skill is stateless and writes no files of its own.
 
 ## The loop, and the seam it runs at
 
@@ -62,13 +62,13 @@ It happens, and the skill is written to live with it rather than to prevent it. 
 
 Usually not, and the skill will not stop it. A browser or end-to-end test is slow enough that the red → green loop stops paying for itself, and pointed at behaviour that does not exist yet it gives you a long, expensive red that teaches you nothing: the agent re-runs it, and the likeliest conclusion it draws is that the *test* is broken. Declare in your repo's `CLAUDE.md` that browser tests are written once the behaviour works, and the skill will follow your file.
 
-**Does `/tdd` replace `/implement`, or the course's `/do-work`?**
+**Does `/tdd` replace `/implement`?**
 
-No. `/tdd` documents the methodology; `/implement` is a very simple work→feedback→commit loop and is the direct stand-in for `/do-work`. The course's single `/do-work` step is now split across `/implement`, `/tdd` and `/code-review`. If you are asking which one to run against a ticket, the answer is almost always `/implement`.
+No. `/tdd` documents the methodology; `/implement` is a very simple work→feedback→commit loop. The single "go and do the ticket" step you might expect is deliberately three here, split across `/implement`, `/tdd` and `/code-review`. If you are asking which one to run against a ticket, the answer is almost always `/implement`.
 
 **Where did the deep-modules and interface-design guidance go?**
 
-Into [codebase-design](./codebase-design.md) in v1.0, generalised so several skills share one vocabulary. `refactoring.md` left at the same time; refactoring is now [code-review](./code-review.md)'s job, and that skill carries the Fowler smell baseline.
+Into [codebase-design](./codebase-design.md), generalised so several skills share one vocabulary. `refactoring.md` left at the same time; refactoring is now [code-review](./code-review.md)'s job, and that skill carries the Fowler smell baseline.
 
 **Does it know about my other tickets?**
 

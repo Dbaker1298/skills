@@ -74,7 +74,7 @@ Less than you would expect, because the skill leads with the problem. `## Redact
 Check what it is reacting to before you act on it. This skill ships a shell script, `scripts/hitl-loop.template.sh`, alongside instructions to run it and to curl a running dev server. A shipped `.sh`, plus text telling an agent to execute it, plus outbound HTTP is the shape a static scanner is built to flag, and it will flag it without opening the file. Open it: it is a short loop of `read -r` prompts that pauses for human input, it is not even marked executable, and its own header tells you to copy it and run it with `bash`. What you are looking at is a rating of the capability surface, not a finding about behaviour, so read the script and decide for yourself.
 
 **What happened to `/diagnose`?**
-Renamed to `/diagnosing-bugs` in v1.0.0. The old name no longer exists. Anything of yours that chains `/diagnose` (a wrapper skill, a saved prompt) needs updating.
+Renamed to `/diagnosing-bugs`. The old name no longer exists. Anything of yours that chains `/diagnose` (a wrapper skill, a saved prompt) needs updating.
 
 ## It's working if
 
