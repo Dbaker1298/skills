@@ -1,10 +1,10 @@
-# Skills For Real Engineers
+# David Baker's Skills
 
-My agent skills that I use every day to do real engineering - not vibe coding.
+Agent skills for the parts of building software that a coding agent gets wrong on its own: working out what to build, turning it into specs and tickets, driving tests, reviewing the diff, and keeping the design coherent as the codebase grows.
 
-Developing real applications is hard. Approaches like GSD, BMAD, and Spec-Kit try to help by owning the process. But while doing so, they take away your control and make bugs in the process hard to resolve.
+This repository was seeded from [mattpocock/skills](https://github.com/mattpocock/skills) and inherits its MIT licence, reproduced in [LICENSE](./LICENSE) with both copyright lines. It is not a fork: the history here is independent, and [UPSTREAM.md](./UPSTREAM.md) records the seed commit and how I review what has changed upstream since.
 
-These skills are designed to be small, easy to adapt, and composable. They work with any model. They're based on decades of engineering experience. Hack around with them. Make them your own. Enjoy.
+Each skill is a Markdown file telling an agent how to do one thing well. There is no framework and no runtime, so you can read one in a minute and change it in two.
 
 ## Installation (30-second setup)
 
@@ -53,7 +53,7 @@ Use the same installer, on any agent, including Claude Code:
 npx skills@latest add Dbaker1298/skills
 ```
 
-It writes the skills into your repo as ordinary files you own and can edit. Nothing updates behind your back; pull my latest changes for a skill when you want them with `npx skills@latest update <name>`.
+It writes the skills into your repo as ordinary files you own and can edit. Nothing updates behind your back; pull the latest changes for a skill when you want them with `npx skills@latest update <name>`.
 
 </details>
 
@@ -65,107 +65,21 @@ In your agent, run it once per repo. It will:
 - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
 - Ask you where you want to save any docs we create
 
-### 3. Bam - you're ready to go.
+### 3. That is it.
 
-## Why These Skills Exist
+## What the skills are for
 
-I built these skills as a way to fix common failure modes I see with Claude Code, Codex, and other coding agents.
+Four problems recur when a coding agent does real work, and the set is organised around them.
 
-### #1: The Agent Didn't Do What I Want
+**You and the agent are not aligned.** You describe a change, the agent builds something adjacent to it, and neither of you finds out until it is built. The answer is to be interrogated before anything is written: [grill-me](./skills/productivity/grill-me/SKILL.md) for any decision, [grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md) when the project has a domain worth writing down as you go. The same interview runs underneath both.
 
-> "No-one knows exactly what they want"
->
-> David Thomas & Andrew Hunt, [The Pragmatic Programmer](https://www.amazon.co.uk/Pragmatic-Programmer-Anniversary-Journey-Mastery/dp/B0833F1T3V)
+**The agent and the codebase do not share a language.** Dropped into an unfamiliar project, an agent invents its own words for things, then spends tokens explaining them back to you. A `CONTEXT.md` glossary settles the vocabulary once, so the names in the code and the names in the conversation agree. [domain-modeling](./skills/engineering/domain-modeling/SKILL.md) builds and sharpens it; [grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md) does it as part of the interview.
 
-**The Problem**. The most common failure mode in software development is misalignment. You think the dev knows what you want. Then you see what they've built - and you realize it didn't understand you at all.
+**The code does not work.** An agent with no feedback is guessing, and it guesses confidently. Types, tests, and something it can actually run are what turn that into iteration. [tdd](./skills/engineering/tdd/SKILL.md) holds a red-green-refactor loop and a position on what makes a test worth writing; [diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md) is the disciplined loop for the bugs that do not fall to a guess.
 
-This is just the same in the AI age. There is a communication gap between you and the agent. The fix for this is a **grilling session** - getting the agent to ask you detailed questions about what you're building.
+**The design rots.** Agents produce code faster than anyone reviews it, so complexity accumulates faster too. [codebase-design](./skills/engineering/codebase-design/SKILL.md) is the shared vocabulary for deep modules, [to-spec](./skills/engineering/to-spec/SKILL.md) makes you name the modules a change touches before it starts, and [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md) scans for places a module could be deepened and reports them back for you to choose from.
 
-**The Fix** is to use:
-
-- [`/grill-me`](./skills/productivity/grill-me/SKILL.md) - for non-code uses
-- [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md) - same as [`/grill-me`](./skills/productivity/grill-me/SKILL.md), but adds more goodies (see below)
-
-These are my most popular skills. They help you align with the agent before you get started, and think deeply about the change you're making. Use them _every_ time you want to make a change.
-
-### #2: The Agent Is Way Too Verbose
-
-> With a ubiquitous language, conversations among developers and expressions of the code are all derived from the same domain model.
->
-> Eric Evans, [Domain-Driven-Design](https://www.amazon.co.uk/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215)
-
-**The Problem**: At the start of a project, devs and the people they're building the software for (the domain experts) are usually speaking different languages.
-
-I felt the same tension with my agents. Agents are usually dropped into a project and asked to figure out the jargon as they go. So they use 20 words where 1 will do.
-
-**The Fix** for this is a shared language. It's a document that helps agents decode the jargon used in the project.
-
-<details>
-<summary>
-Example
-</summary>
-
-Here's an example [`CONTEXT.md`](https://github.com/mattpocock/course-video-manager/blob/076a5a7a182db0fe1e62971dd7a68bcadf010f1c/CONTEXT.md), from my `course-video-manager` repo. Which one is easier to read?
-
-- **BEFORE**: "There's a problem when a lesson inside a section of a course is made 'real' (i.e. given a spot in the file system)"
-- **AFTER**: "There's a problem with the materialization cascade"
-
-This concision pays off session after session.
-
-</details>
-
-This is built into [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md). It's a grilling session, but that helps you build a shared language with the AI, and document hard-to-explain decisions in ADR's.
-
-It's hard to explain how powerful this is. It might be the single coolest technique in this repo. Try it, and see.
-
-> [!TIP]
-> A shared language has many other benefits than reducing verbosity:
->
-> - **Variables, functions and files are named consistently**, using the shared language
-> - As a result, the **codebase is easier to navigate** for the agent
-> - The agent also **spends fewer tokens on thinking**, because it has access to a more concise language
-
-### #3: The Code Doesn't Work
-
-> "Always take small, deliberate steps. The rate of feedback is your speed limit. Never take on a task that’s too big."
->
-> David Thomas & Andrew Hunt, [The Pragmatic Programmer](https://www.amazon.co.uk/Pragmatic-Programmer-Anniversary-Journey-Mastery/dp/B0833F1T3V)
-
-**The Problem**: Let's say that you and the agent are aligned on what to build. What happens when the agent _still_ produces crap?
-
-It's time to look at your feedback loops. Without feedback on how the code it produces actually runs, the agent will be flying blind.
-
-**The Fix**: You need the usual tranche of feedback loops: static types, browser access, and automated tests.
-
-For automated tests, a red-green-refactor loop is critical. This is where the agent writes a failing test first, then fixes the test. This helps give the agent a consistent level of feedback that results in far better code.
-
-I've built a **[`/tdd`](./skills/engineering/tdd/SKILL.md) skill** you can slot into any project. It encourages red-green-refactor and gives the agent plenty of guidance on what makes good and bad tests.
-
-For debugging, I've also built a **[`/diagnosing-bugs`](./skills/engineering/diagnosing-bugs/SKILL.md)** skill that wraps best debugging practices into a disciplined loop, gated phase by phase.
-
-### #4: We Built A Ball Of Mud
-
-> "Invest in the design of the system _every day_."
->
-> Kent Beck, [Extreme Programming Explained](https://www.amazon.co.uk/Extreme-Programming-Explained-Embrace-Change/dp/0321278658)
-
-> "The best modules are deep. They allow a lot of functionality to be accessed through a simple interface."
->
-> John Ousterhout, [A Philosophy Of Software Design](https://www.amazon.co.uk/Philosophy-Software-Design-2nd/dp/173210221X)
-
-**The Problem**: Most apps built with agents are complex and hard to change. Because agents can radically speed up coding, they also accelerate software entropy. Codebases get more complex at an unprecedented rate.
-
-**The Fix** for this is a radical new approach to AI-powered development: caring about the design of the code.
-
-This is built in to every layer of these skills:
-
-- [`/to-spec`](./skills/engineering/to-spec/SKILL.md) quizzes you about which modules you're touching before creating a spec
-
-And crucially, [`/improve-codebase-architecture`](./skills/engineering/improve-codebase-architecture/SKILL.md) surveys a codebase for deepening opportunities and hands you the candidates. I recommend running it on your codebase once every few days. It is a survey, not a rescue: on a genuinely old codebase it will find real candidates, but it won't untangle the mud for you.
-
-### Summary
-
-Software engineering fundamentals matter more than ever. These skills are my best effort at condensing these fundamentals into repeatable practices, to help you ship the best apps of your career. Enjoy.
+That framing, and most of the skills under it, came from upstream. I am keeping what I can vouch for and adapting the rest as I put it to use.
 
 ## Reference
 
@@ -173,7 +87,7 @@ These split on one axis: who can invoke them. **User-invoked** skills are reacha
 
 ### Engineering
 
-Skills I use daily for code work.
+Code work.
 
 **User-invoked**
 
@@ -200,7 +114,7 @@ Skills I use daily for code work.
 
 ### Productivity
 
-General workflow tools, not code-specific.
+Workflow tools that are not code-specific.
 
 **User-invoked**
 
