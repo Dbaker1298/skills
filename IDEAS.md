@@ -12,5 +12,9 @@ write it with `/writing-for-agents`, and delete the line.
 ## Wanted
 
 - Go projects
+- Python projects
 - Terraform
 - Kubernetes
+- Rancher
+- RKE2
+- Harvester
