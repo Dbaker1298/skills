@@ -249,6 +249,15 @@ rule_no_orphaned_docs_pages() {
 # format; a hand-rolled copy here would drift and would be wrong in the
 # direction that matters, passing something Claude rejects.
 #
+# It validates the marketplace manifest only. Given the repo root, the CLI
+# prints "Validating marketplace manifest" and reads .claude-plugin/
+# marketplace.json alone; the plugin manifest needs its own invocation,
+# `claude plugin validate .claude-plugin/plugin.json --strict`, which is not
+# run here. That invocation currently warns that CLAUDE.md at the plugin root
+# is not loaded as project context, which is true and intended, so adding it
+# as a rule means deciding what to do with that warning first. CLAUDE.md
+# states both invocations and what each covers.
+#
 # A missing CLI is a skip, not a violation. An unreadable manifest is this
 # repo being wrong; an absent CLI is the machine lacking a tool, and the two
 # deserve different answers. The repo documents a skills.sh route for Codex and
@@ -257,7 +266,7 @@ rule_no_orphaned_docs_pages() {
 # The skip is printed every time, and CHECK_REQUIRE_ALL=1 makes it fail.
 rule_plugin_manifest_validates() {
   if ! command -v claude >/dev/null 2>&1; then
-    skip "plugin manifests unvalidated: claude CLI not found"
+    skip "marketplace manifest unvalidated: claude CLI not found"
     return
   fi
 
