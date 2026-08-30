@@ -50,6 +50,15 @@ Result: twenty four keeps, no drops, no defers, so no execution tickets follow.
 | [writing-for-agents](./skills/productivity/writing-for-agents/SKILL.md) | keep | This repository's product is documents agents read, so this is the house style guide |
 | [setup-david-baker-skills](./skills/engineering/setup-david-baker-skills/SKILL.md) | keep | The once per repo configuration every other engineering skill assumes |
 
+## Verdicts outside the promoted set
+
+The pass above covered the promoted set. A skill in another bucket gets a
+verdict only when something forces the question.
+
+| Skill | Verdict | Date | Reason |
+| --- | --- | --- | --- |
+| `misc/scaffold-exercises` | drop | 2026-08-30 | Scaffolded exercise directories against a course CLI that is not a public package, so it did nothing outside the course repository it was written for. Removed, with the checker allowance it needed |
+
 ## Running the pass again
 
 Re add a section above, dated, when the set has changed enough that the question

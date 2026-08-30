@@ -375,8 +375,7 @@ upstream_identity_allowances() {
 3 docs/agents/issue-tracker.md
 11 .agents/adr/0002-ship-as-a-claude-code-plugin.md
 1 .agents/adr/0004-drop-the-router-rather-than-rename-it.md
-3 skills/misc/scaffold-exercises/SKILL.md
-7 scripts/check.sh
+6 scripts/check.sh
 ALLOW
 }
 
@@ -394,19 +393,11 @@ ALLOW
 #                               annotate rather than edit
 #   adr/0004                    records why ask-matt was dropped; the decision
 #                               is unreadable without naming what was dropped
-#   scaffold-exercises          NOT provenance, and the one entry here that is
-#                               not defensible on its own terms. A misc/ skill
-#                               that shells out to `pnpm ai-hero-cli`,
-#                               upstream's course tooling, so it does nothing
-#                               outside upstream's course repo. It is allowed
-#                               only so this rule could land, which makes it
-#                               debt rather than a decision. Tracked as #36,
-#                               whose verdict should delete this line.
-#   scripts/check.sh            this rule's own pattern, plus the two notes
-#                               above that name what they are about. The five
-#                               patterns and those two mentions are the seven;
-#                               changing either fails this rule until the count
-#                               is re-counted, which is the point.
+#   scripts/check.sh            this rule's own pattern, plus the note above
+#                               that names what it is about. The five patterns
+#                               and that one mention are the six; changing
+#                               either fails this rule until the count is
+#                               re-counted, which is the point.
 rule_no_upstream_identity() {
   if ! command -v git >/dev/null 2>&1 || ! git rev-parse --git-dir >/dev/null 2>&1; then
     skip "upstream identity strings unchecked: not a git working tree"
