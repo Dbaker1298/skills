@@ -34,7 +34,7 @@ One or two plain-language paragraphs. Lead with the skill's one-sentence job, th
 How and when you reach for the skill, in two beats that are both effectively always present:
 
 - **Invocation mode.** State whether you type it or the agent fires it. A user-invoked skill: "You invoke this by typing `/<name>`, and the agent won't reach for it on its own." A model-invoked skill: "Type `/<name>`, or the agent reaches for it automatically when a task fits."
-- **Trigger boundary.** The index entry: "reach for this when …". Where the skill is confusable with a sibling, add the other half: "for <X> instead, use [<sibling>](./<sibling>.md)."
+- **Trigger boundary.** The index entry: "reach for this when …". Where the skill is confusable with a sibling, add the other half: "for <X> instead, use `[<sibling>](./<sibling>.md)`."
 
 ## Prerequisites
 
