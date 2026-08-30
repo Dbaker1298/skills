@@ -1,7 +1,7 @@
 {
   "name": "david-baker-skills",
   "version": "0.1.0",
-  "description": "David Baker's agent skills for real engineering: grilling, spec/ticket flows, TDD, code review, domain modelling and more. Plug-and-play, not vibe coding.",
+  "description": "David Baker's agent skills: grilling, spec/ticket flows, TDD, code review, domain modelling and more. General engineering practice, from a platform engineer.",
   "author": {
     "name": "David Baker"
   },

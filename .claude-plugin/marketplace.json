@@ -3,12 +3,12 @@
   "owner": {
     "name": "David Baker"
   },
-  "description": "David Baker's skills for real engineering, as an installable Claude Code plugin.",
+  "description": "A platform engineer's agent skills, as an installable Claude Code plugin.",
   "plugins": [
     {
       "name": "david-baker-skills",
       "source": "./",
-      "description": "David Baker's agent skills for real engineering (grilling, spec/ticket flows, TDD, code review, domain modelling and more).",
+      "description": "David Baker's agent skills (grilling, spec/ticket flows, TDD, code review, domain modelling and more). General engineering practice, from a platform engineer.",
       "category": "engineering",
       "keywords": [
         "engineering",
