@@ -1,0 +1,46 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  invariants:
+    name: repo invariants
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The checker delegates manifest correctness to `claude plugin validate`,
+      # and skips that rule when the CLI is absent. CHECK_REQUIRE_ALL=1 turns a
+      # skip into a failure, so without this step the run would fail on the one
+      # rule it could not perform. Validation needs no credentials.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install -g @anthropic-ai/claude-code
+
+      - name: scripts/check.sh
+        run: CHECK_REQUIRE_ALL=1 ./scripts/check.sh
+
+  shell:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # This repository ships shell scripts that consumers execute: a git hook,
+      # and two templates a skill tells an agent to copy and run. They are the
+      # only executable surface here, so they are the only thing worth scanning.
+      #
+      # --severity=error, which the six tracked scripts pass today. At
+      # --severity=warning there is exactly one finding, SC2034 for an unused
+      # colour variable in the wizard's template library, and that library is
+      # explicitly never hand-edited. Tighten the threshold only along with a
+      # decision about that one line.
+      - name: shellcheck tracked scripts
+        run: git ls-files '*.sh' | xargs shellcheck --severity=error

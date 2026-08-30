@@ -28,7 +28,7 @@ The marketplace has to be added first, and it is added once. Updates are not aut
 
 ## Codex, and other agents: skills.sh
 
-The plugin is Claude Code only. Everywhere else, [skills.sh](https://skills.sh/Dbaker1298/skills) copies editable skill files into the project. Use the whole-set form on `README.md`:
+The plugin is Claude Code only. Everywhere else, [skills.sh](https://skills.sh) copies editable skill files into the project. Link the service, not `skills.sh/Dbaker1298/skills`: that page 404s until the service has indexed this repository, and a 404 in the first paragraph of the README is worse than no link. Use the whole-set form on `README.md`:
 
 <canonical-block name="skills-sh-whole-set">
 
@@ -45,7 +45,7 @@ Pick the skills you want, and which coding agents to install them on. **The menu
 <canonical-block name="skills-sh-one-skill">
 
 ```bash
-npx skills@latest add Dbaker1298/skills --skill=<name>
+npx skills@latest add Dbaker1298/skills --skill <name> --agent '*' -y
 ```
 
 ```bash
@@ -64,6 +64,6 @@ The plugin is a managed, read-only bundle you subscribe to. skills.sh writes fil
 
 ## What these commands assume
 
-Both routes read the repository over the network, so **neither resolves for anyone without access to it while `Dbaker1298/skills` is private**. Unauthenticated, `skills.sh/Dbaker1298/skills` and the GitHub API both answer 404. They resolve for me, because the plugin route clones over my SSH key and skills.sh reads through my GitHub credentials, which is the one thing a stranger will not have. So the sandbox run proved the manifests, the wording, and the installed set; it could not prove public reachability, and that half goes public with the repository.
+Both routes read the repository over the network, and both now resolve for someone who is not me. The repository went public on 2026-08-30, and the same day both were re-run from a sandbox with no credentials reachable: the plugin route's SSH clone fails and falls back to anonymous HTTPS, and skills.sh reads the public repository through the GitHub API. There is nothing left in either route that only works for the owner.
 
-Both routes were exercised end to end from a clean sandbox on 2026-08-29, which is where the correction above came from. [install-verification.md](./install-verification.md) holds the recipe, the results, and the one step still to run once the repository is public.
+[install-verification.md](./install-verification.md) holds the recipe and both runs. The corrections above came out of them, which is the argument for running it again whenever a block changes.

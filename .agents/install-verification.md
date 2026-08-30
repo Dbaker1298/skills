@@ -101,27 +101,66 @@ GitHub API both answer 404 for this repository. So this run proved the
 manifests, the wording, and the installed set, and left the stranger's position
 untested.
 
-## The anonymous re-run, once the repository is public
+## The anonymous re-run
 
-Re-run both routes with the credentials out of the way. Do not reach for
-`gh auth logout`: logging the machine out to test a clone is a large change to
-make for a small check, and it is easy to forget to undo. Point `HOME` at an
-empty directory instead. Both routes read their credentials out of `HOME`, the
-plugin route through `~/.ssh` and `~/.gitconfig`, skills.sh through
-`~/.config/gh`, so an empty one is a stranger's machine for as long as the
-command runs and nothing outside it is touched.
+Both routes have to be checked from a position with no credentials, which is
+harder to reach than it looks.
+
+Do not reach for `gh auth logout`: logging the machine out to test a clone is a
+large change to make for a small check, and it is easy to forget to undo.
+Emptying `HOME` is the right instinct and is not enough on its own. On this
+machine, `env -i HOME=<empty dir> ssh -T git@github.com` still answers
+`Hi Dbaker1298!`, so an SSH clone keeps succeeding as me with no `~/.ssh` in
+sight. A check that only empties `HOME` proves nothing about the plugin route.
+
+What works is to break SSH outright and make the fallback do the work:
 
 ```sh
 export SANDBOX_HOME=/tmp/skills-anon-sandbox/home
 mkdir -p "$SANDBOX_HOME" /tmp/skills-anon-sandbox/project
 cd /tmp/skills-anon-sandbox/project && git init -q
-env -i HOME="$SANDBOX_HOME" PATH="$PATH" GIT_TERMINAL_PROMPT=0   git clone https://github.com/Dbaker1298/skills.git anon-clone
+
+anon() {
+  env -i HOME="$SANDBOX_HOME" PATH="$PATH" \
+    GIT_TERMINAL_PROMPT=0 GIT_SSH_COMMAND=/bin/false \
+    CLAUDE_CONFIG_DIR="$SANDBOX_HOME/claude" "$@"
+}
+
+anon claude plugin marketplace add Dbaker1298/skills --scope project
+anon claude plugin install david-baker-skills@dbaker1298 --scope project -y
+anon npx --yes skills@latest add Dbaker1298/skills --skill wait-what --agent '*' -y
 ```
 
-`GIT_TERMINAL_PROMPT=0` matters: without it a repository that is still private
-hangs on a username prompt instead of failing, and the check looks stuck rather
-than red. Then run both install routes under the same `env -i` prefix, and
-check `skills.sh/Dbaker1298/skills` answers 200 rather than 404.
+`GIT_SSH_COMMAND=/bin/false` makes every SSH attempt fail, so a route that
+still succeeds can only have reached the repository anonymously over HTTPS.
+`GIT_TERMINAL_PROMPT=0` stops a credential prompt turning a red check into a
+hung one. Neither variable touches anything outside the command it prefixes.
 
-What is being proved is the one thing the 2026-08-29 run could not: that the
-commands resolve for someone who is not me. Record the result here.
+## Results, 2026-08-30
+
+Repository flipped to public. Run against `b146b33`, from
+`/tmp/skills-anon-sandbox/`, under the `anon` prefix above.
+
+| Check | Result |
+| --- | --- |
+| Anonymous HTTPS clone | Passed. `git clone https://github.com/Dbaker1298/skills.git` with no credentials reachable |
+| Plugin route falls back to HTTPS | Passed. `SSH clone failed, retrying with HTTPS`, then cloned and validated the marketplace |
+| Plugin installs anonymously | Passed. `david-baker-skills@dbaker1298` 0.1.0, project scope |
+| Installed set is the promoted set | Passed. 25 skills, exact match against the manifest |
+| A promoted skill is invoked | Passed. `git-guardrails-claude-code`, promoted the day before, listed its five blocked command shapes with only the Skill tool allowed |
+| skills.sh resolves the public repository | Passed. Enumerated 29 skills and installed `wait-what` alone into `.agents/skills/` |
+| `github.com/Dbaker1298/skills` anonymously | 200 |
+| `skills.sh/Dbaker1298/skills` anonymously | 404, see below |
+
+**Finding: `--skill=<name>` is accepted and ignored.** The single-skill block
+used the `=` spelling. Passed that way with `-y`, the installer skips no menu
+and installs **all 29 skills**, which is the opposite of what the reader asked
+for. `--skill <name>` with a space works, and wants `--agent '*' -y` beside it
+to run without a terminal. Both canonical blocks now use the space form.
+
+**Finding: the skills.sh page for this repository 404s.** The URL shape is
+right, since `skills.sh/vercel-labs/agent-skills` answers 200, so this
+repository is simply not indexed yet. The CLI route works regardless, because
+it reads GitHub rather than the site. `README.md` and the block now link
+`skills.sh` itself rather than a page that does not exist; restore the deep
+link once it resolves.
