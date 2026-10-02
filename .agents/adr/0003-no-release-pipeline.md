@@ -30,3 +30,19 @@ changed since I installed" stops being answerable by pointing at the log.
 Reintroducing changesets at that point is a fresh decision on a repo whose
 history is its own, which is a better starting position than carrying a
 pipeline nobody runs and a changelog that describes someone else's work.
+
+## Update, 2026-10-01
+
+"Nothing downstream reads a version number here" is false. Claude Code reads
+`version` in `.claude-plugin/plugin.json` to decide whether an installed copy
+is stale. #40 added three promoted skills at an unchanged `0.1.0`, and an
+install made before it then ran `claude plugin marketplace update` and
+`claude plugin update`, was told it was already at the latest version, and
+kept the old skill set. Bumping the version in the same sandbox delivered
+them. See #41.
+
+The decision stands: there is still no changelog, no changesets, and no
+release workflow. What changes is that the one version left is load-bearing,
+so it is bumped by hand in every PR that changes a promoted skill, under the
+rule `CLAUDE.md` states. The skills.sh route is unaffected, since it reads
+`main` and never looks at the version.

@@ -27,7 +27,7 @@ Or, from inside a session:
 /plugin install david-baker-skills@dbaker1298
 ```
 
-The marketplace has to be added first, and it is added once. Updates are not automatic: `claude plugin marketplace update dbaker1298` refreshes the source, then `claude plugin update david-baker-skills` applies it, and a restart is required before the new version loads.
+The marketplace has to be added first, and it is added once. Updates are not automatic: `claude plugin marketplace update dbaker1298` refreshes the source, then `claude plugin update david-baker-skills` applies it, and a restart is required before the new version loads. An update arrives only with a new version number, so when `plugin update` reports the version you already have, there is nothing new to fetch.
 
 </details>
 

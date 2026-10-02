@@ -26,6 +26,8 @@ A promoted skill is **wired** into four places, and all four must agree:
 
 A manifest entry must resolve to a directory that exists, and a directory is not a skill until it holds a `SKILL.md`. A docs page with no promoted skill behind it is an orphan, and goes with the skill it documented. Skills in `in-progress/` and `deprecated/` appear in none of the four.
 
+Bump `version` in `.claude-plugin/plugin.json` in the same PR as any change to a promoted skill: minor when the promoted set changes (a skill added, removed, renamed, promoted, or demoted), patch for an edit inside one. Claude Code compares this field to decide whether an installed copy is stale, so a change merged at an unchanged version never reaches anyone who installed before it: `claude plugin update` reports them already at the latest version.
+
 Each bucket folder has a `README.md` listing every skill in the bucket with a one-line description, the name linked to its `SKILL.md`. The promoted buckets' `README.md`s and the top-level `README.md` group entries into **User-invoked** and **Model-invoked**; the non-promoted bucket `README.md`s (`in-progress/`) use a flat list.
 
 ## Docs pages

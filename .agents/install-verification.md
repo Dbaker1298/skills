@@ -164,3 +164,26 @@ repository is simply not indexed yet. The CLI route works regardless, because
 it reads GitHub rather than the site. `README.md` and the block now link
 `skills.sh` itself rather than a page that does not exist; restore the deep
 link once it resolves.
+
+## Results, 2026-10-01: the update path
+
+The runs above only ever installed fresh. This one tested what an existing
+install sees after a change lands, using the plugin sandbox with a local clone
+as the marketplace so the commit it serves could be moved.
+
+| Check | Result |
+| --- | --- |
+| Install at `b6a14fc`, before #40 | 0.1.0, 25 skills |
+| Move the clone to `0ce14f5` (#40, still 0.1.0), then `marketplace update` and `plugin update` | `already at the latest version (0.1.0)`. The cache keeps `gitCommitSha` `b6a14fc` and the old 25 skills |
+| Bump the clone to 0.2.0, then the same two commands | `updated from 0.1.0 to 0.2.0`. The cache holds 28 skills, including `pr`, `retro`, and `implement-spec` |
+| skills.sh, `add --skill pr --skill retro --skill implement-spec` against the public repository | Passed. All three landed in `.claude/skills/` and `skills-lock.json` |
+
+**Finding: a plugin update needs a version bump.** Claude Code keys the update
+on `version` in `.claude-plugin/plugin.json`, not on the commit. The
+`claude-code` canonical block now says so, and `CLAUDE.md` makes the bump part
+of any PR that changes a promoted skill.
+
+**Finding: `claude plugin details` reads the marketplace source.** Straight
+after the no-op update it listed 28 skills while the installed copy held 25.
+Read the cache under `$CLAUDE_CONFIG_DIR/plugins/cache/` to see what is
+actually installed.
