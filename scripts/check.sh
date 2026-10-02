@@ -75,7 +75,14 @@ MANIFEST=".claude-plugin/plugin.json"
 manifest_entries() {
   [ -f "$MANIFEST" ] || return 0
 
-  sed -n '/"skills"[[:space:]]*:[[:space:]]*\[/,/]/p' "$MANIFEST" |
+  skills_array < "$MANIFEST"
+}
+
+# The skills array of whatever manifest arrives on stdin. Split out of
+# manifest_entries so the version rule can read the same array from the base
+# commit's copy of the manifest, which is not a file in the working tree.
+skills_array() {
+  sed -n '/"skills"[[:space:]]*:[[:space:]]*\[/,/]/p' |
     sed '1s/.*\[//' |
     grep -oE '"[^"]+"' |
     tr -d '"'
@@ -494,6 +501,95 @@ rule_no_em_dashes() {
   done < <(tracked_text_files)
 }
 
+# The plugin version moves whenever what the plugin ships moves. Claude Code
+# compares `version` to decide whether an installed copy is stale, so a change
+# merged at an unchanged version never reaches anyone who installed before it:
+# `claude plugin update` tells them they are current. #40 shipped three skills
+# that way. CLAUDE.md states the rule; this enforces it.
+#
+# Compared against the merge-base with CHECK_BASE_REF (default origin/main),
+# working tree included, so a local run catches the miss before the commit
+# rather than after the push. On main itself the merge-base is HEAD and there
+# is nothing to compare, which is correct: the PR that landed it was checked.
+#
+# Two strengths of change, two strengths of bump, mirroring CLAUDE.md:
+#   the promoted set changed (the manifest's skills array differs)  minor
+#   a file inside a promoted skill changed                          patch
+# The set is read from both sides, so a skill removed from the manifest still
+# counts as a change to it. Docs pages are not in either: they ship in the
+# plugin's directory but no harness loads them.
+#
+# A base that cannot be found is a skip, not a pass. CI checks out a single
+# commit unless told otherwise, and a rule that passed quietly there would be
+# the rule never running at all.
+rule_plugin_version_bumped() {
+  if ! command -v git >/dev/null 2>&1 || ! git rev-parse --git-dir >/dev/null 2>&1; then
+    skip "plugin version bump unchecked: not a git working tree"
+    return
+  fi
+
+  local base_ref="${CHECK_BASE_REF:-origin/main}" base
+  if ! base="$(git merge-base "$base_ref" HEAD 2>/dev/null)"; then
+    skip "plugin version bump unchecked: no merge-base with $base_ref (fetch it, or set CHECK_BASE_REF)"
+    return
+  fi
+
+  local base_manifest
+  if ! base_manifest="$(git show "$base:$MANIFEST" 2>/dev/null)"; then
+    return # the base predates the manifest, so there is no version to have bumped
+  fi
+
+  local base_entries cur_entries
+  base_entries="$(printf '%s\n' "$base_manifest" | skills_array | sort)"
+  cur_entries="$(manifest_entries | sort)"
+
+  local need=""
+  if [ "$base_entries" != "$cur_entries" ]; then
+    need="minor"
+  else
+    local changed entry
+    changed="$({ git diff --name-only "$base" --; git ls-files --others --exclude-standard; } 2>/dev/null)"
+    while IFS= read -r entry; do
+      [ -n "$entry" ] || continue
+      if printf '%s\n' "$changed" | grep -qF "${entry#./}/"; then
+        need="patch"
+        break
+      fi
+    done <<< "$cur_entries"
+  fi
+  [ -n "$need" ] || return 0
+
+  local version_re='"version"[[:space:]]*:[[:space:]]*"([0-9]+)\.([0-9]+)\.([0-9]+)"'
+  local old new
+  old="$(printf '%s\n' "$base_manifest" | grep -oE "$version_re" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || true)"
+  new="$(grep -oE "$version_re" "$MANIFEST" 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || true)"
+  if [ -z "$old" ] || [ -z "$new" ]; then
+    violation "$MANIFEST: version is not x.y.z on one side of the comparison (base '${old:-none}', now '${new:-none}')"
+    return
+  fi
+
+  local o_major o_minor o_patch n_major n_minor n_patch
+  IFS=. read -r o_major o_minor o_patch <<< "$old"
+  IFS=. read -r n_major n_minor n_patch <<< "$new"
+
+  local ok=""
+  if [ "$n_major" -gt "$o_major" ]; then
+    ok=1
+  elif [ "$n_major" -eq "$o_major" ] && [ "$n_minor" -gt "$o_minor" ]; then
+    ok=1
+  elif [ "$need" = "patch" ] && [ "$n_major" -eq "$o_major" ] && [ "$n_minor" -eq "$o_minor" ] && [ "$n_patch" -gt "$o_patch" ]; then
+    ok=1
+  fi
+
+  if [ -z "$ok" ]; then
+    if [ "$need" = "minor" ]; then
+      violation "$MANIFEST: the promoted set changed since $base_ref, so version needs a minor bump past $old (it is $new)"
+    else
+      violation "$MANIFEST: a promoted skill changed since $base_ref, so version needs a bump past $old (it is $new)"
+    fi
+  fi
+}
+
 RULES=(
   rule_manifest_entries_resolve
   rule_promoted_skills_are_wired
@@ -501,6 +597,7 @@ RULES=(
   rule_plugin_manifest_validates
   rule_no_upstream_identity
   rule_no_em_dashes
+  rule_plugin_version_bumped
 )
 
 # A rule that fails outright is reported as a violation rather than allowed to

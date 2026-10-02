@@ -13,7 +13,12 @@ jobs:
     name: repo invariants
     runs-on: ubuntu-latest
     steps:
+      # Full history, so the version rule has origin/main to find a merge-base
+      # against. The default single-commit checkout would leave it skipped,
+      # which CHECK_REQUIRE_ALL=1 then fails.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # The checker delegates manifest correctness to `claude plugin validate`,
       # and skips that rule when the CLI is absent. CHECK_REQUIRE_ALL=1 turns a
