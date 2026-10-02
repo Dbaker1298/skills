@@ -6,16 +6,18 @@ reviewed manually rather than merged.
 
 ## Last reviewed upstream commit
 
-`6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`, reviewed 2026-08-29 (the seed snapshot).
+`d81f3a183412e71a5b1e84ca21bc1a35eea03a60`, reviewed 2026-10-01. Ported `pr`, and graduated `implement-spec` and `retro`
+(#39). Declined for now: the `CONTEXT.md` to `GLOSSARY.md` rename, and the removal
+of `resolving-merge-conflicts`.
 
 ## Reviewing what changed upstream
 
 ```sh
 git fetch upstream
-git diff 6654f6b60cd9d5be8b54c6fafe44346dabeb3b76..upstream/main -- skills/
+git diff d81f3a183412e71a5b1e84ca21bc1a35eea03a60..upstream/main -- skills/ docs/
 ```
 
-Read the diff, port anything worth having by hand, then update the SHA and date
+Start from the SHA recorded above, not the seed. Read the diff, port anything worth having by hand, then update the SHA and date
 above. Do not merge or rebase onto `upstream/main`: this repository is expected
 to diverge, and merges would replay decisions that were made deliberately here.
 

@@ -54,11 +54,11 @@ Correct, and expected. `implement` has no completion step. It ends at the commit
 
 **Can I point it at all my tickets at once, or run several in parallel?**
 
-No. One invocation, one ticket; there is no batch dispatch across a queue and no subagent fan-out. Running several `/implement` sessions side by side in one checkout is worse than unsupported, and the reason is git rather than the skill: the sessions share one working directory, one index and one HEAD, so a `git commit --amend` in one lands on whatever the other just committed, and commits arrive on the wrong branch. Worktrees give each session its own directory, index and HEAD, which fixes most of it, but note that `refs/stash` is shared across worktrees too, so a stash can still vanish from under one session. If you want parallelism today, you are assembling it yourself.
+Not with `/implement`: one invocation, one ticket. For a whole spec in one run, use [implement-spec](./implement-spec.md), which fans the tickets out to subagents, each in its own worktree, across the ready frontier, and merges them onto one integration branch. Running several `/implement` sessions side by side in one checkout is worse than unsupported, and the reason is git rather than the skill: the sessions share one working directory, one index and one HEAD, so a `git commit --amend` in one lands on whatever the other just committed, and commits arrive on the wrong branch. Worktrees give each session its own directory, index and HEAD, which fixes most of it, but note that `refs/stash` is shared across worktrees too, so a stash can still vanish from under one session.
 
 **Can it open a pull request instead of committing?**
 
-Not built in. The skill's instruction is one line, `Commit your work to the current branch.`, and there is no configuration flag and no PR mode. Worth knowing that this is eager: the code lands before you have had a chance to run it yourself, and on the current branch rather than a throwaway one. Override it in the invocation ("commit to a branch and open a PR"), or edit your local copy if you want it to be the default.
+Not built in. The skill's instruction is one line, `Commit your work to the current branch.`, and there is no configuration flag and no PR mode. Worth knowing that this is eager: the code lands before you have had a chance to run it yourself, and on the current branch rather than a throwaway one. Override it in the invocation ("commit to a branch and open a PR"), or edit your local copy if you want it to be the default. When the agent does write the PR, [pr](./pr.md) shapes its body.
 
 **`code-review` says it cannot see my changes.**
 
@@ -84,10 +84,10 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 
 ## Where it fits
 
-`implement` is the build step of the main chain, second from the end:
+`implement` is the build step of the main chain:
 
 ```txt
-grill-with-docs → to-spec → to-tickets → implement → code-review
+grill-with-docs → to-spec → to-tickets → implement → code-review → retro
 ```
 
 Its neighbours are [to-tickets](./to-tickets.md), which produces the tickets it consumes and declares the blocking edges that decide their order; [tdd](./tdd.md), which it drives internally at each seam; and [code-review](./code-review.md), which it runs before committing. It sits downstream of the planning skills and trusts them. It does not re-validate the shape of what it was handed, so a badly-structured map or a horizontally-layered ticket gets built as written.
