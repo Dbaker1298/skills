@@ -21,6 +21,18 @@ The Skill tool takes one skill per call. A step that needs two skills is two cal
 
 This whole convention only holds when the named skill is **model-invoked**. A user-invoked skill can never be reached this way, full stop: per the invariant above, no other skill can call it, including by naming it to the Skill tool. When a step's precondition is a user-invoked skill (e.g. `setup-david-baker-skills`), phrase it as an instruction for the human to act on: "tell the user to run `/setup-david-baker-skills`", never as a Skill tool call.
 
+### The one exception: procedures read from a sibling's file
+
+`chief-of-staff` is a long-running orchestrator, and its whole job is to run other user-invoked skills (`retro`, `to-spec`, `to-tickets`, `implement-spec`) over a session where no human is there to type them. Telling the user to run each one would defeat it. So it does the one thing this section otherwise rules out: it reads the sibling's `SKILL.md` by relative path (`../retro/SKILL.md`) and follows it as a **procedure**, not as an invocation. No harness exclusion is bypassed, because nothing is fired; the agent reads a file and acts on its text.
+
+The exception is narrow on purpose, and it carries costs the Skill tool route does not:
+
+- **The path is load-bearing.** It resolves only while both skills sit in the same bucket folder. The plugin keeps the bucket layout, so moving `retro` to `productivity/`, or renaming it, silently breaks `chief-of-staff` unless its paths move too. The checker does not verify these paths.
+- **It is for orchestrators only.** A skill qualifies when running other user-invoked skills unattended is its purpose, not a convenience. Any other skill that wants a user-invoked sibling still tells the user to run it.
+- **The procedure can be adapted.** The reading skill may override a step of the procedure it follows, and should say so where it does (`chief-of-staff` decides for itself which `retro` candidates to pursue, where `retro` would ask you).
+
+Model-invoked siblings are still reached through the Skill tool, even from `chief-of-staff`.
+
 ## Passive vs active domain work
 
 Merely _reading_ `CONTEXT.md` for vocabulary is a one-line prose pointer, not the `domain-modeling` skill. Only the active build/sharpen discipline (challenge terms, edge-case scenarios, write ADRs, update `CONTEXT.md` inline) is `domain-modeling`.
