@@ -81,7 +81,7 @@ Rarely, and you should know that going in. The skill is built to output findings
 
 **Does it work in Codex or another harness?**
 
-Partially. The exploration step names Claude Code's `Agent` tool with `subagent_type=Explore` directly, so a harness without that tool may skip the parallel exploration rather than substitute its own. The skill still runs; the scan is just less thorough. Nothing in it names a fallback, so if your harness fans out to parallel agents under another name, say so when you invoke it.
+Yes. The exploration step asks for a sub-agent in plain words rather than naming any one harness's tool, so a harness that runs subagents under any name can take it. In a harness that runs none, the agent explores in its own context window instead: the skill still works, but the scan spends context the conversation afterwards would have used.
 
 **How do I actually implement deep modules in TypeScript?**
 
