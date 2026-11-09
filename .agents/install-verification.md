@@ -187,3 +187,30 @@ of any PR that changes a promoted skill.
 after the no-op update it listed 28 skills while the installed copy held 25.
 Read the cache under `$CLAUDE_CONFIG_DIR/plugins/cache/` to see what is
 actually installed.
+
+## Results, 2026-11-08: the updating block
+
+Run for #50, which moved the update commands out of the collapsed `claude-code`
+block into their own visible `updating` block. Plugin route from
+`/tmp/skills-update-sandbox/`, with a local clone as the marketplace so the
+commit it serves could be moved, as in the 2026-10-01 run.
+
+| Check | Result |
+| --- | --- |
+| Install with the clone at `80a28e7` | 0.2.0 |
+| Move the clone to `598e557`, then `claude plugin marketplace update dbaker1298` | Passed. `Successfully updated marketplace: dbaker1298` |
+| `claude plugin update david-baker-skills --scope project` | Passed. `updated from 0.2.0 to 0.3.0`, and the cache holds `chief-of-staff` and `software-factory` |
+| skills.sh, `add --skill wait-what` against the public repository, then `update -y` | Passed. `All project skills are up to date` |
+
+**Note: `plugin update` was run at the install's scope.** The sandbox
+installs at project scope, so the update passed `--scope project` to match;
+`plugin update --help` lists `--scope` with the same values as install. A run
+without it was not tried. The README installs at the default scope, so its
+plain command needs none, and the block tells anyone who chose a scope to
+pass the same one.
+
+**Not proved.** The plugin update ran against a local clone, not the GitHub
+route, so it shows what the commands do, not that the anonymous HTTPS
+fallback still works; that was last proved on 2026-08-30. Nor was the
+skills.sh run stale, so what `update` does to a skill edited in place is
+untested, and the block makes no claim about it.
