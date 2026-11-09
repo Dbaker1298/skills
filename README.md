@@ -27,7 +27,7 @@ Or, from inside a session:
 /plugin install david-baker-skills@dbaker1298
 ```
 
-The marketplace has to be added first, and it is added once. Updates are not automatic: `claude plugin marketplace update dbaker1298` refreshes the source, then `claude plugin update david-baker-skills` applies it, and a restart is required before the new version loads. An update arrives only with a new version number, so when `plugin update` reports the version you already have, there is nothing new to fetch.
+The marketplace has to be added first, and it is added once. Updates are not automatic: see [Updating](#updating).
 
 </details>
 
@@ -66,6 +66,24 @@ In your agent, run it once per repo. It will:
 - Ask you where you want to save any docs we create
 
 ### 3. That is it.
+
+### Updating
+
+**Claude Code plugin.** Refresh the marketplace, then update the plugin, then restart Claude Code:
+
+```bash
+claude plugin marketplace update dbaker1298
+claude plugin update david-baker-skills
+```
+
+An update arrives only with a new version number, so when `plugin update` reports the version you already have, there is nothing new to fetch. If you installed with `--scope project` or `--scope local`, pass the same `--scope` to `plugin update`.
+
+**skills.sh.** From the project you installed into, update every skill, or name the ones you want:
+
+```bash
+npx skills@latest update
+npx skills@latest update <name>
+```
 
 ## What the skills are for
 
