@@ -41,13 +41,13 @@ The **frontier** is the open, unblocked, unclaimed tickets (the edge of the know
 
 ## The four decision-ticket types
 
-Every ticket carries a `wayfinder:<type>` label, and is either **HITL** (worked with a human who speaks for themselves) or **AFK**, driven by the agent alone. A HITL ticket only resolves through the live exchange; an agent that answers its own grilling questions has broken it.
+Every ticket carries a `wayfinder:<type>` label, and the label is the only place the type lives: the body never states it, so a session resolves a ticket as whatever its label says. Those `wayfinder:` labels are also the only labels a map and its tickets carry, never a triage label like `ready-for-agent`, because they are decisions rather than implementation work. Each ticket is either **HITL** (worked with a human who speaks for themselves) or **AFK**, driven by the agent alone. A HITL ticket only resolves through the live exchange; an agent that answers its own grilling questions has broken it.
 
 | Type | Mode | Reach for it when | Resolved by |
 | --- | --- | --- | --- |
 | `grilling` | HITL | The default. The question can be settled by talking it through. | [grilling](../productivity/grilling.md) plus [domain-modeling](./domain-modeling.md), in a fresh session |
 | `prototype` | HITL | "How should this look" or "how should this behave": a question talking cannot settle. | [prototype](./prototype.md), with the built artifact linked from the ticket as an asset |
-| `research` | AFK | A fact outside the working directory is blocking a decision. | A [research](./research.md) subagent, fired at charting time and burned down in parallel on a `research/<name>` branch |
+| `research` | AFK | A fact outside the working directory is blocking a decision. | A [research](./research.md) subagent, fired at charting time and burned down in parallel on a `research/<name>` branch that is pushed but never opened as a PR, since it is never merged |
 | `task` | Either | Nothing to decide, but manual work blocks a decision, such as provisioning access, signing up for a service, or moving data so its shape can be seen. | The agent alone where it can, otherwise a precise checklist for the human |
 
 `task` is the only type that *does* rather than decides, and it earns its place by unblocking a decision, never by delivering a piece of the destination. It is also the type most easily mis-read: an agent takes it for an implementation step and starts writing product code inside the map.
@@ -94,6 +94,8 @@ It is this skill, renamed to `wayfinder` and invoked as `/wayfinder`. "Decision 
 
 - The destination is written down and agreed before a single ticket exists.
 - Every open ticket reads as a question. Any ticket that reads "build the X" is either mis-typed or belongs downstream of the map.
+- No ticket on the map carries a triage label such as `ready-for-agent`, so none of them turns up in a queue of work for implementers.
+- Cross-references between tickets point at the real tickets. A link to an unrelated issue means a placeholder number was written before the ids existed.
 - You can look at your tracker and see which tickets are takeable without opening the map, since that is the frontier rendering itself through native blocking.
 - A session resolves one ticket, posts the answer as a resolution comment, closes it, and leaves one line on the map's *Decisions so far*. Then it stops.
 - **Not yet specified** shrinks over time. A patch of fog that graduates into a ticket disappears from that section rather than living in both places.

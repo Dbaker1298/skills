@@ -52,7 +52,7 @@ Because the description and the rules disagree, and the rules are the half that 
 
 **It asked me to choose a test seam and I had no idea which to pick.**
 
-The skill asks one question, "what's the public interface, and which seams should we test?", and then refuses to write a test at a seam you have not confirmed. It gives you nothing to answer it with: no note on what a component-level seam catches that an integration seam misses, no sense of what each costs to run. You are choosing between labels. Ask for the trade-offs before you answer, in those terms, and the gate does its job. It is also why the chain agrees seams up front in `to-spec`, where you have the whole feature in view rather than one prompt at the moment you least want to think about it.
+The skill asks one question, "what's the public interface, and which seams should we test?", and then refuses to write a test at a seam you have not confirmed. Each seam it proposes comes with a one-line note on what a test there catches and what it misses, so you are weighing trade-offs rather than choosing between labels. If a note is missing or too vague to decide on, ask for it before you answer; cost to run is not part of the note, so ask for that too where it matters. It is also why the chain agrees seams up front in `to-spec`, where you have the whole feature in view rather than one prompt at the moment you least want to think about it.
 
 **It wrote the implementation before the test, even though the skill says red first.**
 
@@ -76,7 +76,7 @@ No. It has no view of the issue graph at all, so run against one ticket it will 
 
 ## It's working if
 
-- It stops and names the seams it intends to test at, and waits, before any test file exists.
+- It stops and names the seams it intends to test at, each with a line on what it catches and what it misses, and waits, before any test file exists.
 - One test appears, goes red, gets just enough code to pass, and only then does the next test appear, not a batch of tests followed by a batch of code.
 - Test names read as capabilities ("user can checkout with valid cart"), not as internals ("checkout calls paymentService.process").
 - Expected values in assertions are literals you can trace to the spec, not values recomputed the way the code computes them.

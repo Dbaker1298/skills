@@ -31,7 +31,7 @@ Everything lands on one branch. Each implementer:
 
 Whether a pull request exists at all is the tracker's call. If your tracker closes work through PRs, or you ask for one, a draft PR opens after the first merge and is marked ready at the end. Otherwise the run stops on the integration branch with every ticket resolved the way your tracker closes work, which works fully offline against a local markdown tracker.
 
-Implementers talk to the orchestrator through **context pointers** (the spec, the ticket, shared exploration notes, earlier commits) rather than pasted summaries, which keeps each subagent's prompt small and the orchestrator's window free for the graph.
+Every ticket gets a fresh implementer subagent, started with a fresh context window, and so does the single fix pass after the review: none of them inherits the orchestrator's conversation. Implementers talk to the orchestrator through **context pointers** (the spec, the ticket, shared exploration notes, earlier commits) rather than pasted summaries, which keeps each subagent's prompt small and the orchestrator's window free for the graph.
 
 ## Common questions
 

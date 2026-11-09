@@ -37,7 +37,7 @@ The edges are the point of the artifact. They read two ways depending on the tra
 | Tracker | Where the edges live | How you work them |
 | --- | --- | --- |
 | Local markdown | Text in one file per ticket under `.scratch/<feature>/issues/<NN>-<slug>.md`, numbered blockers-first | Top to bottom, by hand |
-| A real tracker (GitHub, Linear) | Native blocking links, or sub-issues where the tracker has them | Any ticket whose blockers are done is on the **frontier** and can be grabbed |
+| A real tracker (GitHub, Linear) | Native blocking links where the tracker has them, else a "Blocked by" section in the body. When the source was an existing issue, each ticket is also its sub-issue | Any ticket whose blockers are done is on the **frontier** and can be grabbed |
 
 The edges live in the ticket either way. The medium only decides whether anything can act on them in parallel. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
 
@@ -62,10 +62,10 @@ Over-decomposition is the failure mode to expect from this skill: asked to break
 This is the failure the vertical-slice rule is written against, and the skill still produces it sometimes. Catch it at the quiz step by asking one question per ticket: what can I demo when this is done? A ticket with no answer is a horizontal slice. Asking for a "demo path" line on every ticket makes the same check part of the artifact, so the pressure applies while the tickets are being written rather than after.
 
 **On GitHub the tickets weren't created as sub-issues of the spec issue.**
-The skill asks for the right thing and does not say how, which is enough of a gap for an agent to fall through. Its publish step says to use the platform's native blocking and sub-issue relationship where it has one, and treats a plain "Blocked by" line as the fallback for trackers that have no such thing. What it never names is the command, so the agent has to know it. `gh` does support this directly: `gh issue create --parent <n>` at creation, and `gh issue edit <parent> --add-sub-issue <n>` afterwards. Note that writing them into `docs/agents/issue-tracker.md` is not enough on its own: `to-tickets` never reads that file, it only says the how "depends on the tracker `/setup-david-baker-skills` configured". Put the two commands in your repo's `CLAUDE.md`, which an agent loads as project context whatever skill is running, and the fallback stops being the path of least resistance.
+They should be: when the source was an existing issue, the publish step makes every ticket a sub-issue of it, using the sub-issue operation in your tracker doc (`docs/agents/issue-tracker.md`). The GitHub template [setup-david-baker-skills](./setup-david-baker-skills.md) writes carries that operation (`gh issue create --parent <n>`, or `gh issue edit <parent> --add-sub-issue <n>` afterwards), but a tracker doc written by an older release does not, and then the agent has to know the command unaided. If your tickets arrive flat, check the tracker doc for a sub-issue entry, and re-run setup if it has none. A spec that lived only in the conversation has no issue to be the parent, so flat tickets are correct there.
 
 **"Blocked by" was written into the issue body instead of a real blocking link.**
-Same gap, same fix. GitHub does have a native blocking relationship, whatever an agent tells you: `gh issue create --blocked-by 12,15` sets it at creation time, and because the skill publishes in dependency order with blockers first, the numbers it needs always exist by the time it gets there. The body text is the documented fallback for trackers with no native edge, not the default, so an agent reaching for it on GitHub has quietly downgraded your issue graph to prose.
+GitHub does have a native blocking relationship, whatever an agent tells you: `gh issue create --blocked-by 12,15` sets it at creation time, and because the skill publishes in dependency order with blockers first, the numbers it needs always exist by the time it gets there. The body text is the documented fallback for trackers with no native edge, not the default, and the ticket template drops its "Blocked by" section entirely when the edges were set natively. A "Blocked by" section on a GitHub ticket therefore means the agent quietly downgraded your issue graph to prose. The same stale-tracker-doc cause as the previous question applies: the current GitHub template spells out the blocking commands, an older one may not.
 
 **Where do the local tickets go?**
 One file per ticket, under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, in dependency order, matching the layout the local tracker template already described. Not the root-level `tickets.md` an older version of the skill wrote: a single shared file raced when parallel agents wrote to it. The `NN` prefix is a real ticket ID, so `/implement 03` works instead of retyping a long title.
@@ -87,6 +87,7 @@ The skill stops at the artifact, and there is no auto-dispatch mode. Dispatch is
 - Nothing in a ticket body is a file path or a line number, except a snippet a prototype produced.
 - Each ticket reads like something a fresh session could finish without you in the room.
 - Prefactoring, where it found any, is at the front of the order rather than mixed into feature tickets.
+- On GitHub, the published tickets show up as sub-issues of the spec issue, with their blockers as native dependencies rather than a "Blocked by" section in the body.
 
 ## Where it fits
 

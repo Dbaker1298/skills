@@ -57,7 +57,7 @@ Read the sub-agent briefs in `SKILL.md` and you can see why. Neither the Standar
 
 **Should I run it in the same session that wrote the code?**
 
-Prefer a fresh one. The same context reviewing itself is not review, it is confirmation bias with a slash command: the agent in the authoring session holds every assumption that shaped the code, which is precisely the context an independent reviewer would lack. It is also the reason to be wary of [implement](./implement.md)'s built-in review step, which runs inside the session that just wrote the diff. Invoking `/code-review` yourself from a clean session is the honest version.
+Prefer a fresh one. The same context reviewing itself is not review, it is confirmation bias with a slash command: the agent in the authoring session holds every assumption that shaped the code, which is precisely the context an independent reviewer would lack. The two sub-agents do start with a fresh context window, so they never inherit that reasoning directly, but the session that wrote the code still decides what goes into their briefs and how their reports are cleaned up. It is also the reason to be wary of [implement](./implement.md)'s built-in review step, which runs inside the session that just wrote the diff. Invoking `/code-review` yourself from a clean session is the honest version.
 
 **After every ticket, or once at the end?**
 

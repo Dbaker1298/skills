@@ -72,11 +72,11 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 
 **`/implement #2` in a fresh session worked on something completely unrelated.**
 
-`#2` is resolved against whatever numbered list the agent can see, which in a fresh session may be a todo file, a checklist, or another work list rather than the configured tracker. The resolution is confident rather than fail-closed, so the mistake is not obvious until it has started. Pass the full reference, the issue URL or `owner/repo#2`, and ask it to confirm the title back before it begins.
+`#2` can be resolved against whatever numbered list the agent can see, which in a fresh session may be a todo file, a checklist, or another work list rather than the configured tracker. The skill guards against this: given a ticket reference, it fetches the ticket from the issue tracker and states its title before starting, and asks you when the reference is ambiguous. That makes the mistake visible in the first line rather than halfway through the build, so read the title it states before you let it run on. A full reference (the issue URL, or `owner/repo#2`) still leaves the least room for a wrong match.
 
 ## It's working if
 
-- The session opens by reading the ticket or spec and restating what it will build, rather than asking you what to build.
+- The session opens by reading the ticket or spec and restating what it will build, rather than asking you what to build. Given a ticket reference, the first thing it tells you is that ticket's title.
 - You can see an actual `/tdd` invocation in the trace, not just tests appearing in the diff.
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
 - The run reaches a commit on your current branch without you prompting it to carry on.
