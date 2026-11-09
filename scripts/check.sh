@@ -265,20 +265,24 @@ rule_no_orphaned_docs_pages() {
 # "plugins[0] plugin.json -> name: Invalid input", so it does validate the
 # plugin manifest's fields through the marketplace's plugin list.
 #
-# The second invocation still earns its place, because the two are not
-# redundant: the plugin-manifest run also checks the plugin root, which is
-# where the CLAUDE.md warning below comes from, and the marketplace run never
-# emits it. Validating the file directly is also what keeps plugin.json covered
-# if it ever stops being reachable from marketplace.json.
+# The second invocation still earns its place: validating the file directly is
+# what keeps plugin.json covered if it ever stops being reachable from
+# marketplace.json.
 #
-# The plugin-manifest run always warns that CLAUDE.md at the plugin root is not
-# loaded as project context, and --strict promotes that to a failure. The
-# warning is accurate and permanently inapplicable: the validator's suggested
-# remedy is to ship the context as a skill, but CLAUDE.md is instructions for
-# people working on this repository and is deliberately not shipped to plugin
-# consumers. So it is filtered out and anything else still fails.
+# Since Claude Code 2.1.319 both runs check the plugin root, and both print two
+# lines that --strict turns into a failure but that are permanently
+# inapplicable here, so both runs pass through validator_findings below:
 #
-# The filter matches the warning's text, so a reworded message in a future
+#   - The warning that CLAUDE.md at the plugin root is not loaded as project
+#     context. Accurate, but the validator's remedy is to ship the context as a
+#     skill, and CLAUDE.md is instructions for people working on this
+#     repository, deliberately not shipped to plugin consumers. Before 2.1.319
+#     only the plugin-manifest run emitted it.
+#   - A note that the folder also holds a marketplace manifest. It is printed
+#     under "About these checks" and the validator says it does not change the
+#     result, but it carries the same bullet as a real finding.
+#
+# The filter matches each line's text, so a reworded message in a future
 # Claude Code release stops matching and fails this rule. That is the direction
 # to fail in: a new failure gets read, a silent pass does not. Same ordering as
 # the zero-entry guard in rule_manifest_entries_resolve.
@@ -289,47 +293,54 @@ rule_no_orphaned_docs_pages() {
 # other harnesses, so a contributor can reasonably not have Claude Code
 # installed, and failing their run over it would be a red they cannot clear.
 # The skip is printed every time, and CHECK_REQUIRE_ALL=1 makes it fail.
+# The findings left in a validator report once the known-inapplicable lines are
+# dropped, one per line; empty when nothing is left.
+#
+# The validator prints each finding as its own bulleted line and everything
+# else as chrome: what it is validating, how many findings there were, and the
+# verdict. Matching on the bullet rather than on the chrome means a new warning
+# is caught whatever its wording, and only the exact known lines are ever
+# suppressed. The bullet is U+276F, spelt as bytes for the same reason the em
+# dash is: so the character itself stays out of this file's prose.
+validator_findings() {
+  grep $'\xe2\x9d\xaf' |
+    grep -v -e 'CLAUDE.md at the plugin root is not loaded as project context' \
+      -e 'This folder also holds a marketplace manifest' || true
+}
+
 rule_plugin_manifest_validates() {
   if ! command -v claude >/dev/null 2>&1; then
     skip "marketplace manifest unvalidated: claude CLI not found"
     return
   fi
 
-  # One violation carrying the validator's whole report, rather than one per
-  # line of it. A line of someone else's output is not a violation of this
-  # repo's invariants, and counting it as one makes the summary lie: a single
-  # rejected manifest would read as five or six problems to go and fix.
-  local output
-  if ! output="$(claude plugin validate . --strict 2>&1)"; then
-    violation "claude plugin validate . --strict failed:
-$(printf '%s\n' "$output" | sed 's/^/    /')"
-  fi
+  # One violation per run carrying the findings that are left, rather than one
+  # per line of them. A line of someone else's output is not a violation of
+  # this repo's invariants, and counting it as one makes the summary lie: a
+  # single rejected manifest would read as five or six problems to go and fix.
+  #
+  # The two runs are reported separately. They validate different files, so
+  # collapsing them would leave the reader working out which manifest the
+  # output belongs to.
+  local target output filtered
+  for target in . .claude-plugin/plugin.json; do
+    if ! output="$(claude plugin validate "$target" --strict 2>&1)"; then
+      filtered="$(printf '%s\n' "$output" | validator_findings)"
 
-  # Reported separately from the marketplace run above. They validate different
-  # files, so collapsing them would leave the reader working out which manifest
-  # the output belongs to.
-  # U+276F, the glyph the validator prefixes each finding with. Spelt as bytes
-  # for the same reason the em dash is: so the character itself stays out of
-  # this file's prose.
-  local findings_bullet=$'\xe2\x9d\xaf'
+      # A failed run with no finding left is a pass only if the validator
+      # reported findings at all. A failure that prints no bulleted line (a
+      # crash, an unreadable file) would otherwise filter down to nothing and
+      # pass silently, so the whole report goes out instead.
+      if [ -z "$filtered" ] && ! printf '%s\n' "$output" | grep -q $'\xe2\x9d\xaf'; then
+        filtered="$output"
+      fi
 
-  local plugin_output filtered
-  if ! plugin_output="$(claude plugin validate .claude-plugin/plugin.json --strict 2>&1)"; then
-    # The validator prints each finding as its own bulleted line and everything
-    # else as chrome: what it is validating, how many findings there were, and
-    # the verdict. So drop the one finding that is permanently inapplicable
-    # here, then ask whether any finding is left. Matching on the bullet rather
-    # than on the chrome means a new warning is caught whatever its wording,
-    # and only the exact known line is ever suppressed.
-    filtered="$(printf '%s\n' "$plugin_output" |
-      grep "$findings_bullet" |
-      grep -v 'CLAUDE.md at the plugin root is not loaded as project context' || true)"
-
-    if [ -n "$filtered" ]; then
-      violation "claude plugin validate .claude-plugin/plugin.json --strict failed:
+      if [ -n "$filtered" ]; then
+        violation "claude plugin validate $target --strict failed:
 $(printf '%s\n' "$filtered" | sed 's/^/    /')"
+      fi
     fi
-  fi
+  done
 }
 
 # Every tracked file, NUL separated, symlinks excluded.
