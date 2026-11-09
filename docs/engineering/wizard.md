@@ -41,7 +41,7 @@ For each captured value, scoping settles where it lands:
 
 ## The template already solves the UX
 
-The [template](../../skills/engineering/wizard/template.sh) ships the whole experience: progress with time remaining, confirmation gates, cross-platform URL opening including WSL, hidden entry for secrets, idempotent `.env` upserts, `gh secret` / `gh variable` writes, and a closing summary of everything it had to skip. Everything above the `STAGES` marker is a fixed library, identical in every wizard and never hand-edited. The consistency is the point. Your job is only to scope the procedure and author its stages.
+The [template](../../skills/engineering/wizard/template.sh) ships the whole experience: progress with time remaining, confirmation gates, cross-platform URL opening including WSL, hidden entry for secrets, idempotent `.env` upserts, `gh secret` / `gh variable` writes, and a closing summary of everything it had to skip. A `.env` the wizard creates is readable only by you (mode 0600), and every value is written single-quoted, so a `$`, a space or a `#` in a key survives being sourced. Everything above the `STAGES` marker is a fixed library, identical in every wizard and never hand-edited. The stages themselves sit inside one function that runs on the last line, so bash has read the whole file before the first prompt and an edit to the script mid-run cannot break the run in progress. The consistency is the point. Your job is only to scope the procedure and author its stages.
 
 The agent that writes a wizard never runs it end to end, because it opens browsers and waits for human input. It verifies statically instead: `bash -n`, `shellcheck` where available, and a trace that every value lands where scoping said it would, with every `set_secret` name matching a real `secrets.*` reference in CI. Set your expectations accordingly: the first run is yours, and that run is the test.
 
@@ -62,7 +62,7 @@ No. The agent writes a script; it doesn't run it. You run the script yourself, a
 
 Not mid-run. There is no back button: the stages run forward, and a wrong answer on stage 3 means Ctrl-C and re-run. Re-running is cheap by design, and that is the answer rather than a consolation: any value already written to `.env` is offered back as a default, so you press Enter through the stages you got right and retype only the wrong one.
 
-Within a single answer, editing is limited too. The prompts are built on plain `read -r` rather than Readline, so arrow keys insert `^[[D` and `^[[C` into the value instead of moving the cursor. Backspace works. Delete back to the mistake rather than trying to move the cursor into it.
+Within a single answer, visible prompts are edited with Readline, so the arrow keys move the cursor and you can fix a typo in place. Hidden secret entry is plain `read -s`, where arrow keys insert `^[[D` and `^[[C` into the value instead; Backspace works there, so delete back to the mistake rather than trying to move the cursor into it.
 
 **Does it know what I've already set up?**
 
@@ -89,6 +89,7 @@ It did. It's now model-invoked, so the agent reaches for it unprompted when it h
 - You're shown an ordered list of stages, and the values each one produces, and asked to confirm, before any script exists.
 - Every URL is opened before the value from that page is asked for. You're never asked to paste something you haven't been sent to fetch.
 - Secrets are typed blind. Nothing sensitive echoes into your scrollback.
+- A `.env` it created is mode 0600 (`ls -l` shows `-rw-------`), and its values are in single quotes.
 - Each stage fits one screen. Nothing you still need has scrolled away.
 - Ctrl-C and re-run picks up where you left off, offering the values already saved as defaults.
 - The final screen lists what it wrote, and separately lists what it couldn't do and you have to finish by hand.

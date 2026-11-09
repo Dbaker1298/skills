@@ -44,6 +44,8 @@ The tracker options:
 | **Local markdown** | files under `.scratch/<feature>/` in this repo | nothing: no remote at all |
 | **Other** | wherever you say | one paragraph from you describing the workflow |
 
+GitHub and GitLab need a repo the CLI can reach. If you pick one and no `git remote` points at that host, the skill asks you for the repo URL and wires it up (`git init` if needed, then `origin`), and it does not move on until `gh repo view` / `glab repo view` prints the project; if that still fails, it stops and tells you what is missing.
+
 The first three ship as templates in the skill and work out of the box. Local markdown is a first-class option, not a fallback: a solo project with no remote is fully supported. One caveat is worth repeating: don't use local markdown if you're using GitHub. They are alternatives, not layers.
 
 "Other" is not a stub either. It is the reason Jira, Linear, Azure DevOps and anything else can work: you describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow that prose rather than a hard-coded API. Anything you can drive from a CLI, an MCP server or a dashboard fits, because what the skills read is your description of it.
@@ -68,12 +70,12 @@ A real gap, caused by a rule the skill states plainly: edit `CLAUDE.md` if it ex
 | You want it to keep working | Make `AGENTS.md` canonical and leave `CLAUDE.md` as a one-line pointer at it |
 | Neither file exists | The skill asks you which to create rather than deciding. Expect the question so it does not read as a stall |
 
-**It didn't create my triage labels.**
+**Does it create my triage labels?**
 
-It doesn't. `docs/agents/triage-labels.md` is a *mapping*: it tells `/triage` which strings in your tracker correspond to the five canonical roles. It does not run `gh label create`. On a fresh GitHub repo the labels genuinely do not exist yet, so the first triage run fails on the first label it tries to apply. Two follow-ons:
+On GitHub and GitLab, yes: when the label section ran, it creates each configured label the tracker lacks (`gh label create` / `glab label create`), so the first triage run does not fail on a missing label. `docs/agents/triage-labels.md` itself is still only a *mapping*, telling `/triage` which strings in your tracker correspond to the five canonical roles. Two follow-ons:
 
-- If your tracker already uses the canonical names, the mapping is an identity table and there is nothing to configure. That is the intended common case, not a missing step.
-- [wayfinder](./wayfinder.md)'s `wayfinder:map` and `wayfinder:<type>` labels are not created here either, and `gh issue create --label <missing>` fails outright rather than creating the label. Create them by hand before the first wayfinder run on a GitHub repo.
+- The label section only runs when the `triage` skill is installed, and on a local markdown or "other" tracker nothing is created. Edit the mapping later and the new strings are yours to create.
+- [wayfinder](./wayfinder.md)'s `wayfinder:map` and `wayfinder:<type>` labels are not created here, and `gh issue create --label <missing>` fails outright rather than creating the label. Create them by hand before the first wayfinder run on a GitHub repo.
 
 **Can I configure the other skills' behaviour here (grilling cadence, question format, tone)?**
 
@@ -91,7 +93,8 @@ It is a fair objection: a skill that configures the other skills does mean a mod
 
 - `docs/agents/issue-tracker.md` and `docs/agents/domain.md` exist, plus `triage-labels.md` if `triage` is installed.
 - An `## Agent skills` section appears in the instruction file your harness actually reads, with a one-line summary pointing at each of those files.
-- The tracker it proposed matches the remote you really use, and the label strings match labels that really exist in your tracker.
+- The tracker it proposed matches the remote you really use, and `gh repo view` / `glab repo view` finds the project from inside the repo.
+- The label strings match labels that really exist in your tracker; on GitHub or GitLab, any that were missing exist after the run.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.
 - Nothing in the skill files themselves changed. If setup edited a `SKILL.md`, something went wrong.
 

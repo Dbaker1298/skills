@@ -16,6 +16,8 @@ Reachable only when you type them (Claude Code: `disable-model-invocation: true`
 - **[implement-spec](./implement-spec/SKILL.md)**: Implement a whole spec in one run. Works the tickets as a task graph, running implementer subagents in their own worktrees across the ready frontier, and merges them onto one integration branch.
 - **[retro](./retro/SKILL.md)**: Look back over a coding session and suggest improvements to the agent's environment (navigation pointers, automated checks, coding standards, tooling) so the next run goes better.
 - **[wayfinder](./wayfinder/SKILL.md)**: Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on the issue tracker, resolved one at a time until the way to the destination is clear.
+- **[chief-of-staff](./chief-of-staff/SKILL.md)**: Pursue a long-running goal in one session as its chief of staff: all work runs in background subagents, memory lives in a dated wiki, and every task is a chance to improve the environment the agents work in.
+- **[software-factory](./software-factory/SKILL.md)**: Shared language for designing a software factory, a system of agents that turns tickets, PRs and schedules into merged code: the tasks it runs and the services it plugs into. Call it alongside a grilling session.
 
 ## Model-invoked
 
