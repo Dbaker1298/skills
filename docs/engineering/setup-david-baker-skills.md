@@ -4,7 +4,7 @@
 
 Those files are the only thing that varies between repos. The skills themselves are identical everywhere; they read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why no skill file ever needs editing to point it somewhere else. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with zero changes to the skills.
 
-It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, your existing `CLAUDE.md`, your existing `CONTEXT.md`, proposes what it found, and waits for you to confirm before writing anything.
+It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, your existing `CLAUDE.md`, your existing `GLOSSARY.md`, proposes what it found, and waits for you to confirm before writing anything.
 
 ## When to reach for it
 
@@ -33,7 +33,7 @@ It leads each section with the recommended answer, and skips whatever exploratio
 | --- | --- | --- |
 | **Issue tracker** | the one matching your `git remote` | always: this is the one real choice |
 | **Triage labels** | keep the five canonical names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed |
-| **Domain docs** | single-context: one `CONTEXT.md` plus `docs/adr/` at the root | only if it spots monorepo signals, and then it offers a multi-context `CONTEXT-MAP.md` |
+| **Domain docs** | single-context: one `GLOSSARY.md` plus `docs/adr/` at the root | only if it spots monorepo signals, and then it offers a multi-context `GLOSSARY-MAP.md` |
 
 The tracker options:
 
@@ -51,6 +51,9 @@ The first three ship as templates in the skill and work out of the box. Local ma
 "Other" is not a stub either. It is the reason Jira, Linear, Azure DevOps and anything else can work: you describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow that prose rather than a hard-coded API. Anything you can drive from a CLI, an MCP server or a dashboard fits, because what the skills read is your description of it.
 
 ## Common questions
+
+**My repo still has a `CONTEXT.md`. Will setup handle it?**
+Yes. It looks for the glossary's old names, `CONTEXT.md` and `CONTEXT-MAP.md`, and offers to `git mv` them to `GLOSSARY.md` and `GLOSSARY-MAP.md`, fixing the links inside the map and the names in `docs/agents/domain.md`. Nothing moves until you confirm.
 
 **Do I have to use GitHub?**
 
@@ -100,4 +103,4 @@ It is a fair objection: a skill that configures the other skills does mean a mod
 
 ## Where it fits
 
-`setup-david-baker-skills` is the **run-once setup** for the engineering flow, the precondition everything else assumes rather than a step in the chain. Its neighbours are its readers: [triage](./triage.md), which applies the label vocabulary written here; [to-spec](./to-spec.md) and [to-tickets](./to-tickets.md), which publish into the tracker named here; and [wayfinder](./wayfinder.md), which reads the "Wayfinding operations" section of the same tracker file to know how maps and child tickets are stored. The domain-doc layout it records is the one [domain-modeling](./domain-modeling.md) fills in later: it creates `CONTEXT.md` and ADRs lazily, when a term or decision actually gets resolved, so an empty repo after setup is the expected state.
+`setup-david-baker-skills` is the **run-once setup** for the engineering flow, the precondition everything else assumes rather than a step in the chain. Its neighbours are its readers: [triage](./triage.md), which applies the label vocabulary written here; [to-spec](./to-spec.md) and [to-tickets](./to-tickets.md), which publish into the tracker named here; and [wayfinder](./wayfinder.md), which reads the "Wayfinding operations" section of the same tracker file to know how maps and child tickets are stored. The domain-doc layout it records is the one [domain-modeling](./domain-modeling.md) fills in later: it creates `GLOSSARY.md` and ADRs lazily, when a term or decision actually gets resolved, so an empty repo after setup is the expected state.

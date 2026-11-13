@@ -32,3 +32,7 @@ several other skills read `CONTEXT.md` or nearby ADRs without a pointer.
 
 Found while repairing these pointers in #13, after the setup skill was renamed;
 the soft-dependency correction and the exhaustiveness check were added in #22.
+
+Where this ADR names `CONTEXT.md`, read `GLOSSARY.md`: the glossary was
+renamed in #52, after both paragraphs above were written. The reasoning is
+unchanged by the name.

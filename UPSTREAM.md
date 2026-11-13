@@ -6,7 +6,12 @@ reviewed manually rather than merged.
 
 ## Last reviewed upstream commit
 
-`4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`, reviewed 2026-11-08 (upstream 1.3.2). Ported the
+`5863806dd4e15c63174bee4e7515a4256792ecfa`, reviewed 2026-11-12. Upstream `main` had moved by one merged PR, a
+wording fix to `software-factory` (#1416), which is ported. No new skills. The
+`CONTEXT.md` to `GLOSSARY.md` rename, declined at both reviews below, is now
+adopted, together with the setup skill's offer to migrate a legacy file (#52).
+
+Previous review: `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d`, 2026-11-08 (upstream 1.3.2). Ported the
 behaviour fixes to the promoted skills and the wizard template, and promoted
 `chief-of-staff` and `software-factory` straight into `engineering/`, although both are
 still in-progress upstream (#45). Declined for now: the setup skill's offer to migrate
@@ -22,7 +27,7 @@ rename, and the removal of `resolving-merge-conflicts`.
 
 ```sh
 git fetch upstream
-git diff 4ae2317ddb22b046e26455e4f9c9b3aaaf62212d..upstream/main -- skills/ docs/
+git diff 5863806dd4e15c63174bee4e7515a4256792ecfa..upstream/main -- skills/ docs/
 ```
 
 Start from the SHA recorded above, not the seed. Read the diff, port anything worth having by hand, then update the SHA and date
