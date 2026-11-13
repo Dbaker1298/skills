@@ -389,7 +389,7 @@ upstream_identity_allowances() {
 2 README.md
 2 UPSTREAM.md
 1 CLAUDE.md
-1 CONTEXT.md
+1 GLOSSARY.md
 3 docs/agents/issue-tracker.md
 11 .agents/adr/0002-ship-as-a-claude-code-plugin.md
 1 .agents/adr/0004-drop-the-router-rather-than-rename-it.md
@@ -404,7 +404,7 @@ ALLOW
 #   README.md                   the one derivation sentence (link text + URL)
 #   UPSTREAM.md                 the seed statement, same shape
 #   CLAUDE.md                   the rule that this repo was seeded, not forked
-#   CONTEXT.md                  the glossary entry defining Upstream
+#   GLOSSARY.md                  the glossary entry defining Upstream
 #   docs/agents/issue-tracker.md  the two-remote note that stops a write to
 #                               upstream; deleting it is a safety regression
 #   adr/0002                    inherited reasoning, which CLAUDE.md says to

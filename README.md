@@ -78,6 +78,8 @@ claude plugin update david-baker-skills
 
 An update arrives only with a new version number, so when `plugin update` reports the version you already have, there is nothing new to fetch. If you installed with `--scope project` or `--scope local`, pass the same `--scope` to `plugin update`.
 
+**Upgrading to 0.3.1 or later: rename `CONTEXT.md`.** The domain glossary is now `GLOSSARY.md` (and a multi-context map is `GLOSSARY-MAP.md`). Every skill looks for the new name, so a repo that already holds a `CONTEXT.md` needs it renamed by hand: `git mv CONTEXT.md GLOSSARY.md`, the same for `CONTEXT-MAP.md` and the per-context files it points at, and the names updated in `docs/agents/domain.md`. Re-running `/setup-david-baker-skills` offers to do this for you.
+
 **skills.sh.** From the project you installed into, update every skill, or name the ones you want:
 
 ```bash
@@ -91,7 +93,7 @@ Four problems recur when a coding agent does real work, and the set is organised
 
 **You and the agent are not aligned.** You describe a change, the agent builds something adjacent to it, and neither of you finds out until it is built. The answer is to be interrogated before anything is written: [grill-me](./skills/productivity/grill-me/SKILL.md) for any decision, [grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md) when the project has a domain worth writing down as you go. The same interview runs underneath both.
 
-**The agent and the codebase do not share a language.** Dropped into an unfamiliar project, an agent invents its own words for things, then spends tokens explaining them back to you. A `CONTEXT.md` glossary settles the vocabulary once, so the names in the code and the names in the conversation agree. [domain-modeling](./skills/engineering/domain-modeling/SKILL.md) builds and sharpens it; [grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md) does it as part of the interview.
+**The agent and the codebase do not share a language.** Dropped into an unfamiliar project, an agent invents its own words for things, then spends tokens explaining them back to you. A `GLOSSARY.md` settles the vocabulary once, so the names in the code and the names in the conversation agree. [domain-modeling](./skills/engineering/domain-modeling/SKILL.md) builds and sharpens it; [grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md) does it as part of the interview.
 
 **The code does not work.** An agent with no feedback is guessing, and it guesses confidently. Types, tests, and something it can actually run are what turn that into iteration. [tdd](./skills/engineering/tdd/SKILL.md) holds a red-green-refactor loop and a position on what makes a test worth writing; [diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md) is the disciplined loop for the bugs that do not fall to a guess.
 
@@ -109,7 +111,7 @@ Code work.
 
 **User-invoked**
 
-- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `CONTEXT.md` and ADRs inline.
+- **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `GLOSSARY.md` and ADRs inline.
 - **[triage](./skills/engineering/triage/SKILL.md)**: Move issues through a state machine of triage roles.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
 - **[setup-david-baker-skills](./skills/engineering/setup-david-baker-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
@@ -128,7 +130,7 @@ Code work.
 - **[diagnosing-bugs](./skills/engineering/diagnosing-bugs/SKILL.md)**: Disciplined diagnosis loop for hard bugs and performance regressions: build a feedback loop that goes red on this bug → minimise → hypothesise → instrument → fix → regression-test.
 - **[research](./skills/engineering/research/SKILL.md)**: Investigate a question against high-trust primary sources and capture the findings as a cited Markdown file in the repo, run as a background agent.
 - **[tdd](./skills/engineering/tdd/SKILL.md)**: Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
-- **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)**: Actively build and sharpen a project's domain model: challenge terms against the glossary, stress-test with edge-case scenarios, and update `CONTEXT.md` and ADRs inline.
+- **[domain-modeling](./skills/engineering/domain-modeling/SKILL.md)**: Actively build and sharpen a project's domain model: challenge terms against the glossary, stress-test with edge-case scenarios, and update `GLOSSARY.md` and ADRs inline.
 - **[codebase-design](./skills/engineering/codebase-design/SKILL.md)**: Shared discipline and vocabulary for designing deep modules: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface.
 - **[code-review](./skills/engineering/code-review/SKILL.md)**: Two-axis review of the diff since a fixed point: **Standards** (does it follow the repo's coding standards, plus a Fowler smell baseline?) and **Spec** (does it faithfully implement the originating issue/spec?), run as parallel sub-agents so neither pollutes the other.
 - **[resolving-merge-conflicts](./skills/engineering/resolving-merge-conflicts/SKILL.md)**: Work through an in-progress git merge or rebase conflict hunk by hunk, resolving by intent traced to each side's primary source, then finish the operation (never `--abort`).
@@ -146,7 +148,7 @@ Workflow tools that are not code-specific.
 - **[handoff](./skills/productivity/handoff/SKILL.md)**: Compact the current conversation into a handoff document so another agent can continue the work.
 - **[teach](./skills/productivity/teach/SKILL.md)**: Teach the user a new skill or concept over multiple sessions, using the current directory as a stateful teaching workspace.
 - **[to-questionnaire](./skills/productivity/to-questionnaire/SKILL.md)**: Turn a decision you can't answer alone into a Markdown questionnaire for the one person who can, filled in async, or together over a meeting. It grills you about the send (who it's for, what you need back), not the subject.
-- **[wait-what](./skills/productivity/wait-what/SKILL.md)**: Fire this the moment a message doesn't land. The agent re-pitches it with the context you're missing, in plain English, using your `CONTEXT.md` vocabulary.
+- **[wait-what](./skills/productivity/wait-what/SKILL.md)**: Fire this the moment a message doesn't land. The agent re-pitches it with the context you're missing, in plain English, using your `GLOSSARY.md` vocabulary.
 
 **Model-invoked**
 

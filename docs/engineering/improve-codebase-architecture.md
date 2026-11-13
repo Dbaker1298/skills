@@ -27,9 +27,9 @@ Where it is confusable with siblings:
 
 ## Prerequisites
 
-None to run it. It reads `CONTEXT.md` and any ADRs in `docs/adr/` if they exist, and speaks in your domain's own nouns when they do: a candidate reads as "deepen the Order intake module," not "refactor the FooBarHandler."
+None to run it. It reads `GLOSSARY.md` and any ADRs in `docs/adr/` if they exist, and speaks in your domain's own nouns when they do: a candidate reads as "deepen the Order intake module," not "refactor the FooBarHandler."
 
-It writes in two places. The report goes to `<tmpdir>/architecture-review-<timestamp>.html`, outside the repo. During the grilling loop it will add or sharpen terms in `CONTEXT.md`, creating that file if it does not exist, and offer to record a rejected candidate as an ADR so a future run does not re-suggest it.
+It writes in two places. The report goes to `<tmpdir>/architecture-review-<timestamp>.html`, outside the repo. During the grilling loop it will add or sharpen terms in `GLOSSARY.md`, creating that file if it does not exist, and offer to record a rejected candidate as an ADR so a future run does not re-suggest it.
 
 ## Depth, and the report that hunts for it
 
@@ -98,4 +98,4 @@ There is no good answer shipped with the skill. What would close the gap is a la
 
 ## Where it fits
 
-`improve-codebase-architecture` is **periodic maintenance**: run it every few days, outside any chain, to queue up work rather than to do it. Its neighbours are [codebase-design](./codebase-design.md), which owns the depth-and-seam vocabulary every candidate is written in, [grilling](../productivity/grilling.md), which walks the decision tree once you have chosen a candidate, and [domain-modeling](./domain-modeling.md), which keeps `CONTEXT.md` and the ADRs current as the decision settles. What it produces is an idea, which re-enters the main build flow at [grill-with-docs](./grill-with-docs.md) or [to-spec](./to-spec.md).
+`improve-codebase-architecture` is **periodic maintenance**: run it every few days, outside any chain, to queue up work rather than to do it. Its neighbours are [codebase-design](./codebase-design.md), which owns the depth-and-seam vocabulary every candidate is written in, [grilling](../productivity/grilling.md), which walks the decision tree once you have chosen a candidate, and [domain-modeling](./domain-modeling.md), which keeps `GLOSSARY.md` and the ADRs current as the decision settles. What it produces is an idea, which re-enters the main build flow at [grill-with-docs](./grill-with-docs.md) or [to-spec](./to-spec.md).

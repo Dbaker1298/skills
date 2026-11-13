@@ -2,7 +2,7 @@
 
 This is the repository's own instruction file. `AGENTS.md` is a symlink to it, so one edit covers both names and there is nothing to keep in sync.
 
-`CONTEXT.md` holds the glossary. Terms in bold below are defined there; use them rather than the synonyms it lists under `_Avoid_`.
+`GLOSSARY.md` holds the glossary. Terms in bold below are defined there; use them rather than the synonyms it lists under `_Avoid_`.
 
 ## Buckets
 
@@ -104,4 +104,4 @@ The five canonical triage roles, each label string equal to its name. See `docs/
 
 ### Domain docs
 
-Single-context: `CONTEXT.md` at the repo root, ADRs in `.agents/adr/`. See `docs/agents/domain.md`.
+Single-context: `GLOSSARY.md` at the repo root, ADRs in `.agents/adr/`. See `docs/agents/domain.md`.
