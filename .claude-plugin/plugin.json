@@ -1,6 +1,6 @@
 {
   "name": "david-baker-skills",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "David Baker's agent skills: grilling, spec/ticket flows, TDD, code review, domain modelling and more. General engineering practice, from a platform engineer.",
   "author": {
     "name": "David Baker"

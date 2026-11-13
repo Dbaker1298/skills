@@ -78,7 +78,7 @@ claude plugin update david-baker-skills
 
 An update arrives only with a new version number, so when `plugin update` reports the version you already have, there is nothing new to fetch. If you installed with `--scope project` or `--scope local`, pass the same `--scope` to `plugin update`.
 
-**Upgrading to 0.3.1 or later: rename `CONTEXT.md`.** The domain glossary is now `GLOSSARY.md` (and a multi-context map is `GLOSSARY-MAP.md`). Every skill looks for the new name, so a repo that already holds a `CONTEXT.md` needs it renamed by hand: `git mv CONTEXT.md GLOSSARY.md`, the same for `CONTEXT-MAP.md` and the per-context files it points at, and the names updated in `docs/agents/domain.md`. Re-running `/setup-david-baker-skills` offers to do this for you.
+**Upgrading from 0.3.0 or earlier: rename `CONTEXT.md`.** The domain glossary is now `GLOSSARY.md` (and a multi-context map is `GLOSSARY-MAP.md`). Every skill looks for the new name, so a repo that already holds a `CONTEXT.md` needs it renamed by hand: `git mv CONTEXT.md GLOSSARY.md`, the same for `CONTEXT-MAP.md` and the per-context files it points at, and the names updated in `docs/agents/domain.md`. Re-running `/setup-david-baker-skills` offers to do this for you.
 
 **skills.sh.** From the project you installed into, update every skill, or name the ones you want:
 
